@@ -1,0 +1,344 @@
+<html>
+
+<!-- these 4 files always have to be included -->
+<link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css"/>
+<script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+<script type="text/javascript" src="../../lib/js/jquery-ui-1.10.3.full.min.js"></script>
+
+<!-- these three files  have to be always included -->
+<link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
+<script type="text/javascript" src="../../js/translate.js"></script>
+<script type="text/javascript" src="../../js/adapter-settings.js"></script>
+
+<!-- you have to define 2 functions in the global scope: -->
+<script type="text/javascript">
+    var isStarted =   null;
+
+    systemDictionary = {
+        "OPC UA adapter settings": {"en": "OPC UA adapter settings",  "de": "OPC UA Adapter-Einstellungen",  "ru": "Настройки драйвера OPC UA"},
+        "Type:":                  {"en": "Type:",                  "de": "Typ:",                   "ru": "Тип:"},
+        "Port:":                  {"en": "Port:",                  "de": "Port:",                  "ru": "Порт:"},
+        "User:":                  {"en": "User:",                  "de": "Username:",              "ru": "Имя пользователя:"},
+        "Password:":              {"en": "Password:",              "de": "Kennwort:",              "ru": "Пароль:"},
+        "Password confirmation:": {"en": "Password confirmation:", "de": "Kennwort-Wiederholung:", "ru": "Подтверждение пароля:"},
+        "URL:":                   {"en": "URL:",                   "de": "URL:",                   "ru": "URL:"},
+        "Secure:":                {"en": "Secure:",                "de": "SSL:",                   "ru": "SSL:"},
+        "Public certificate:":    {"en": "Public certificate:",    "de": "Publikzertifikat:",      "ru": "'Public' сертификат:"},
+        "Private certificate:":   {"en": "Private certificate:",   "de": "Privatzertifikat:",      "ru": "'Private' сертификат:"},
+        "Patterns:":              {"en": "Subscribe patterns:",    "de": "Subscribe patterns:",    "ru": "Patterns:"},
+        "Divided by comma":       {
+            "en": "Divided by comma, e.g. 'opcua/0/#,javascript/#'",
+            "de": "Mit Komma getrennt, z.B 'opcua/0/#,javascript/#'",
+            "ru": "Использовать запятую, как разделитеть. Например 'opcua/0/#,javascript/#'"
+        },
+        "Mask to publish":       {
+            "en": "e.g. 'opcua.0.*,javascript.*'",
+            "de": "z.B 'opcua.0.*,javascript.*'",
+            "ru": "Использовать запятую, как разделитеть. Например 'opcua.0.*,javascript.*'"
+        },
+        "Store only on change:":  {"en": "Publish only on change:",  "de": "Publish nur bei Änderung:",  "ru": "Отсылать только изменения:"},
+        "Trace output for every message:": {
+            "en": "Trace output for every message:",
+            "de": "Trace Ausgabe für jede Meldung:",
+            "ru": "Вывод лога для каждого изменения:"
+        },
+        "Test connection":        {"en": "Test connection with Server", "de": "Teste Verbindung zum Server", "ru": "Проверить настройки"},
+        "Result: ":               {"en": "Result: ",               "de": "Ergebnis: ",             "ru": "Результат: "},
+        "connected":              {"en": "connected",              "de": "verbunden",              "ru": "успешно"},
+        "Main settings":          {"en": "Main settings",          "de": "Allgemeine Einstellungen","ru": "Основные настройки"},
+        "Connection settings":    {"en": "Connection settings",    "de": "Verbindungseinstellungen",    "ru": "Настройки соединения"},
+        "Authentication settings":{"en": "Authentication settings","de": "Authentication Einstellungen", "ru": "Настройки аутентификации"},
+        "Adapter settings":       {"en": "OPC UA settings",        "de": "OPC UA Einstellungen",     "ru": "Настройки OPC UA"},
+        "Mask to publish own states:":    {
+            "en": "Mask to publish own states:",
+            "de": "Maske für Bekanntgeben von eigenen States:",
+            "ru": "Маска для собственных значений:"
+        },
+        "Send states (ack=true) too:":    {
+            "en": "Send states (ack=true) too:",
+            "de": "Sende auch Zustände (ack=true):",
+            "ru": "Посылать не только команды, но и состояния (ack=true):"
+        },
+        "Publish all states at start:":    {
+            "en": "Publish own states on connect:",
+            "de": "Bekanntgeben eigene States beim Verbinden:",
+            "ru": "Выдавать собственные значения при старте:"
+        },
+        "Publish states on subscribe:":    {
+            "en": "Publish states on subscribe:",
+            "de": "Bekanntgeben von States bei Subscribe:",
+            "ru": "Публиковать состояния при подписке:"
+        },
+        "Set certificates or load it first in the system settings (right top).":    {
+            "en": "Set certificates or load it first in the system settings (right top).",
+            "de": "Setze Zertificate oder lade die erst unter System/Einstellungen (oben rechts).",
+            "ru": "Нужно выбрать сертификаты или сначала загрузить их в системных настройках (вверху справа)."
+        },
+        "Prefix for topics:":     {"en": "Prefix for all topics:", "de": "Prefix für alle Topics:","ru": "Префикс для всех значений:"},
+        "Max topic length:":      {"en": "Max topic name length:", "de": "Maximale Topicnamelänge","ru": "Максимальная длина имени топика:"},
+        "Server":                 {"en": "Server/broker",          "de": "Server/broker",          "ru": "Сервер/брокер"},
+        "Client":                 {"en": "Client/subscriber",      "de": "Client/subscriber",      "ru": "Клиент/подписчик"}
+    };
+
+    function encrypt(key, value) {
+        var result="";
+        for(var i = 0; i < value.length; ++i) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
+    }
+
+    function decrypt(key, value) {
+        var result = "";
+        for(var i = 0; i < value.length; ++i) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
+    }
+
+    function showHideSettings() {
+        /*if ($('#type').val() == 'client') {
+            $('#_url').show();
+            $('#test').show();
+            $('#_patterns').show();
+            $('#_certPublic').hide();
+            $('#_certPrivate').hide();
+            $('#_webSocket').hide();
+            $('#_publishOnSubscribe').hide();
+        }else {
+            $('#_url').hide();
+            $('#test').hide();
+            $('#_patterns').hide();
+            $('#_webSocket').show();
+            if ($('#ssl').prop('checked')) {
+                $('#_certPublic').show();
+                $('#_certPrivate').show();
+            } else {
+                $('#_certPublic').hide();
+                $('#_certPrivate').hide();
+            }
+            $('#_publishOnSubscribe').show();
+        }*/
+    }
+
+    function init() {
+        showHideSettings();
+        $('#type').change(showHideSettings);
+        $('#test').button().click(test);
+    }
+
+    function setValue(id, value, onChange) {
+
+        if (id === 'pass') value = decrypt('Zgfr56gFe87jJOM', value);
+
+        // example: select elements with id=key and class=value and insert value
+        if ($('#' + id + '.value').attr('type') == 'checkbox') {
+            $('#' + id + '.value').prop('checked', value).change(function () {
+                onChange();
+            });
+        } else {
+            $('#' + id + '.value').val(value).change(function () {
+                onChange();
+            }).keyup(function () {
+                // Check that only numbers entered
+                if ($(this).hasClass('number')) {
+                    var val = $(this).val();
+                    if (val) {
+                        var newVal = '';
+                        for (var i = 0; i < val.length; i++) {
+                            if (val[i] >= '0' && val[i] <= '9') {
+                                newVal += val[i];
+                            }
+                        }
+
+                        if (val != newVal) $(this).val(newVal);
+                    }
+                }
+                $(this).trigger('change');
+            });
+        }
+    }
+
+    // the function loadSettings has to exist ...
+    function load(settings, _onChange) {
+        for (var key in settings) {
+            setValue(key, settings[key], _onChange);
+        }
+        //settings.sendAckToo = settings.sendAckToo || false;
+        //settings.webSocket  = settings.webSocket || false;
+        //$('#pass_confirm').val($('#pass').val());
+        init();
+        fillSelectCertificates('#certPublic',  'public',  settings.certPublic);
+        fillSelectCertificates('#certPrivate', 'private', settings.certPrivate);
+        _onChange(false);
+    }
+
+    function test() {
+        var newValue = JSON.stringify(getSettings());
+        if (!common.enabled) {
+            showMessage(_('Enable first the adapter to test client.'));
+            return;
+        }
+        if (changed) {
+            showMessage(_('First save the adapter'));
+            return;
+        }
+        sendTo('opcua.' + instance, 'test', getSettings(), function (result) {
+            showMessage(_('Result: ') + _(result));
+        });
+    }
+
+    function saveHelper(obj, id, value) {
+        var ids = id.split('_');
+
+        if (ids.length === 1) {
+            if (ids[0] === 'pass') value = encrypt('Zgfr56gFe87jJOM', value);
+            obj[id] = value;
+        } else if (ids.length === 2) {
+            if (!obj[ids[0]]) obj[ids[0]] = {};
+            obj[ids[0]][ids[1]] = value;
+        } else if (ids.length === 3) {
+            if (!obj[ids[0]]) obj[ids[0]] = {};
+            if (!obj[ids[0]][ids[1]]) obj[ids[0]][ids[1]] = {};
+            obj[ids[0]][ids[1]][ids[2]] = value;
+        }
+        return obj;
+    }
+
+    function getSettings() {
+        var obj = {};
+        $('.value').each(function () {
+            var $this = $(this);
+            var id = $this.attr('id');
+
+            if ($this.attr('type') == 'checkbox') {
+                obj = saveHelper(obj, id, $this.prop('checked'))
+            } else {
+                obj = saveHelper(obj, id, $this.val())
+            }
+        });
+        return obj;
+    }
+
+    // ... and the function save has to exist.
+    // you have to make sure the callback is called with the settings object as first param!
+    function save(callback) {
+        /*if ($('#pass').val() != $('#pass_confirm').val()) {
+            showMessage(_('Password confirmation is not equal with password'));
+            return;
+        }
+        if ($('#ssl').prop('checked') && $('#type').val() == 'server' && (!$('#certPrivate').val() || !$('#certPublic').val())) {
+            showMessage(_('Set certificates or load it first in the system settings (right top).'));
+            return;
+        }*/
+
+        // example: select elements with class=value and build settings object
+        callback(getSettings());
+    }
+</script>
+
+<!-- you have to put your config page in a div with id adapter-container -->
+<div id="adapter-container">
+
+    <table><tr>
+        <td><img src="opcua.png"></td>
+        <td style="padding-top: 20px; padding-left: 10px"><h3 class="translate">OPC UA adapter settings</h3></td>
+    </tr></table>
+
+    <table>
+        <tr>
+            <td colspan='3'><h4 class="translate">Main settings</h4></td>
+        </tr>
+        <tr>
+            <td class="translate">Type:</td>
+            <td><select id="type" class="value">
+                <option value="client" class="translate">Client</option>
+                <option value="server" class="translate">Server</option>
+            </select></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan='3'><h4 class="translate">Connection settings</h4></td>
+        </tr>
+        <tr id="_url">
+            <td class="translate">URL:</td>
+            <td><input type="text" id="url" class="value"/></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="translate">Port:</td>
+            <td><input id="port" type="text" size="5" class="value number"/></td>
+            <td></td>
+        </tr>
+        <tr id="_certPublic">
+            <td class="translate">Public certificate:</td>
+            <td><select id="certPublic" class="value"></select></td>
+            <td></td>
+        </tr>
+        <tr id="_certPrivate">
+            <td class="translate">Private certificate:</td>
+            <td><select id="certPrivate" class="value"></select></td>
+            <td></td>
+        </tr>
+        <!--tr>
+            <td colspan='3'><h4 class="translate">Authentication settings</h4></td>
+        </tr>
+        <tr>
+            <td class="translate">User:</td>
+            <td><input id="user" type="text" size="17" class="value"/></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="translate">Password:</td>
+            <td><input id="pass" type="password" size="17" class="value"/></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="translate">Password confirmation:</td>
+            <td><input id="pass_confirm" type="password" size="17"/></td>
+            <td></td>
+        </tr-->
+        <tr>
+            <td colspan='3'><h4 class="translate">Adapter settings</h4></td>
+        </tr>
+        <tr id="_patterns">
+            <td class="translate">Patterns:</td>
+            <td><input id="patterns" type="text" size="17" class="value"/></td>
+            <td class="translate">Divided by comma</td>
+        </tr>
+        <tr>
+            <td class="translate">Store only on change:</td>
+            <td><input id="onchange" type="checkbox" class="value"/></td>
+            <td class="translate"></td>
+        </tr>
+        <tr id ="_publishOnSubscribe">
+            <td class="translate">Publish states on subscribe:</td>
+            <td><input id="publishOnSubscribe" type="checkbox" class="value"/></td>
+            <td class="translate"></td>
+        </tr>
+        <tr>
+            <td class="translate">Prefix for topics:</td>
+            <td><input id="prefix" type="text" size="17" class="value"/></td>
+            <td class="translate"></td>
+        </tr>
+        <tr>
+            <td class="translate">Trace output for every message:</td>
+            <td><input id="debug" type="checkbox" class="value"/></td>
+            <td class="translate"></td>
+        </tr>
+        <tr>
+            <td class="translate">Send states (ack=true) too:</td>
+            <td><input id="sendAckToo" type="checkbox" class="value"/></td>
+            <td class="translate"></td>
+        </tr>
+        <tr>
+            <td class="translate">Max topic length:</td>
+            <td><input id="maxTopicLength" class="value" size="17"/></td>
+            <td class="translate"></td>
+        </tr>
+    </table>
+    <button id="test" class="translate">Test connection</button>
+
+</div>
+</html>

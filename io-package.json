@@ -1,0 +1,51 @@
+{
+    "common": {
+        "name":                     "opcua",
+        "version": "0.0.1",
+        "title":                    "OPC-UA Adapter",
+        "desc":                     {
+            "en": "The adapter allows to use OPC-UA server and client in ioBroker",
+            "de": "Adapter ermöglicht die Benutzung von OPC-UA Server/Client mit ioBroker",
+            "ru": "Драйвер позволяет использовать OPC-UA сервер или клиент с ioBroker"
+        },
+        "authors": [
+            "bluefox <dogafox@gmail.com>"
+        ],
+        "license":                  "MIT",
+        "platform":                 "Javascript/Node.js",
+        "mode":                     "daemon",
+        "messagebox":               true,
+        "readme":                   "https://github.com/ioBroker/ioBroker.opcua/blob/master/README.md",
+        "loglevel":                 "info",
+        "icon":                     "opcua.png",
+        "keywords":                 ["OPC", "OPC UA"],
+        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.opcua/master/admin/opcua.png",
+		"type":                     "communication",
+        "config": {
+            "width" :    800,
+            "height" :   850,
+            "minWidth":  400,
+            "minHeight": 400
+        }
+    },
+    "native": {
+        "type":        "server",
+        "port":        4334,
+        "certPublic":  "",
+        "certPrivate": "",
+        "patterns":    "javascript.0.*"
+    },
+    "objects": [
+
+    ],
+    "instanceObjects": [
+        {
+            "_id":  "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        }
+    ]
+}

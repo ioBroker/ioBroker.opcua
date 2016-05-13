@@ -1,0 +1,42 @@
+{
+  "name": "iobroker.opcua",
+  "description": "The adapter allows to use OPC-UA server and client in ioBroker.",
+  "version": "0.0.1",
+  "author": "bluefox <dogafox@gmail.com>",
+  "homepage": "https://github.com/ioBroker/ioBroker.opcua",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ioBroker/ioBroker.opcua"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/ioBroker/ioBroker.opcua/blob/master/LICENSE"
+    }
+  ],
+  "keywords": [
+    "iobroker",
+    "OPC",
+    "OPC UA"
+  ],
+  "dependencies": {
+    "node-opcua": "^0.0.54"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-replace": "^0.9.3",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-jscs": "^2.0.0",
+    "grunt-http": "^1.6.0",
+    "mocha": "^2.3.4",
+    "chai": "^3.4.1"
+  },
+  "bugs": {
+    "url": "https://github.com/ioBroker/ioBroker.opcua/issues"
+  },
+  "main": "main.js",
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha"
+  },
+  "license": "MIT"
+}
