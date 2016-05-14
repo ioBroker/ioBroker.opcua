@@ -30,10 +30,12 @@
     },
     "native": {
         "type":        "server",
+        "name":        "",
         "port":        4334,
         "certPublic":  "",
         "certPrivate": "",
-        "patterns":    "javascript.0.*"
+        "patterns":    "javascript.0.*",
+        "sendAckToo":  true
     },
     "objects": [
 

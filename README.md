@@ -8,7 +8,11 @@ ioBroker OPC-UA Adapter
 
 [![NPM](https://nodei.co/npm/iobroker.opcua.png?downloads=true)](https://nodei.co/npm/iobroker.opcua/)
 
-
+Actually only Server is implemented.
+Following data types are supported:
+- number
+- string
+- boolean
 
 ## Changelog
 

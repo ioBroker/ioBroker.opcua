@@ -37,12 +37,7 @@
             "de": "z.B 'opcua.0.*,javascript.*'",
             "ru": "Использовать запятую, как разделитеть. Например 'opcua.0.*,javascript.*'"
         },
-        "Store only on change:":  {"en": "Publish only on change:",  "de": "Publish nur bei Änderung:",  "ru": "Отсылать только изменения:"},
-        "Trace output for every message:": {
-            "en": "Trace output for every message:",
-            "de": "Trace Ausgabe für jede Meldung:",
-            "ru": "Вывод лога для каждого изменения:"
-        },
+        "Store only on change:":  {"en": "Store/Send only on change:",  "de": "Speichern/Senden nur bei Änderung:",  "ru": "Сохранять/Отсылать только изменения:"},
         "Test connection":        {"en": "Test connection with Server", "de": "Teste Verbindung zum Server", "ru": "Проверить настройки"},
         "Result: ":               {"en": "Result: ",               "de": "Ergebnis: ",             "ru": "Результат: "},
         "connected":              {"en": "connected",              "de": "verbunden",              "ru": "успешно"},
@@ -50,35 +45,18 @@
         "Connection settings":    {"en": "Connection settings",    "de": "Verbindungseinstellungen",    "ru": "Настройки соединения"},
         "Authentication settings":{"en": "Authentication settings","de": "Authentication Einstellungen", "ru": "Настройки аутентификации"},
         "Adapter settings":       {"en": "OPC UA settings",        "de": "OPC UA Einstellungen",     "ru": "Настройки OPC UA"},
-        "Mask to publish own states:":    {
-            "en": "Mask to publish own states:",
-            "de": "Maske für Bekanntgeben von eigenen States:",
-            "ru": "Маска для собственных значений:"
-        },
         "Send states (ack=true) too:":    {
             "en": "Send states (ack=true) too:",
             "de": "Sende auch Zustände (ack=true):",
             "ru": "Посылать не только команды, но и состояния (ack=true):"
-        },
-        "Publish all states at start:":    {
-            "en": "Publish own states on connect:",
-            "de": "Bekanntgeben eigene States beim Verbinden:",
-            "ru": "Выдавать собственные значения при старте:"
-        },
-        "Publish states on subscribe:":    {
-            "en": "Publish states on subscribe:",
-            "de": "Bekanntgeben von States bei Subscribe:",
-            "ru": "Публиковать состояния при подписке:"
         },
         "Set certificates or load it first in the system settings (right top).":    {
             "en": "Set certificates or load it first in the system settings (right top).",
             "de": "Setze Zertificate oder lade die erst unter System/Einstellungen (oben rechts).",
             "ru": "Нужно выбрать сертификаты или сначала загрузить их в системных настройках (вверху справа)."
         },
-        "Prefix for topics:":     {"en": "Prefix for all topics:", "de": "Prefix für alle Topics:","ru": "Префикс для всех значений:"},
-        "Max topic length:":      {"en": "Max topic name length:", "de": "Maximale Topicnamelänge","ru": "Максимальная длина имени топика:"},
-        "Server":                 {"en": "Server/broker",          "de": "Server/broker",          "ru": "Сервер/брокер"},
-        "Client":                 {"en": "Client/subscriber",      "de": "Client/subscriber",      "ru": "Клиент/подписчик"}
+        "Server":                 {"en": "Server",                  "de": "Server",                 "ru": "Сервер"},
+        "Client":                 {"en": "Client",                  "de": "Client",                 "ru": "Клиент"}
     };
 
     function encrypt(key, value) {
@@ -98,28 +76,19 @@
     }
 
     function showHideSettings() {
-        /*if ($('#type').val() == 'client') {
+        if ($('#type').val() == 'client') {
             $('#_url').show();
             $('#test').show();
-            $('#_patterns').show();
+            $('#_patterns').hide();
             $('#_certPublic').hide();
             $('#_certPrivate').hide();
-            $('#_webSocket').hide();
-            $('#_publishOnSubscribe').hide();
         }else {
-            $('#_url').hide();
+            $('._url').hide();
             $('#test').hide();
-            $('#_patterns').hide();
-            $('#_webSocket').show();
-            if ($('#ssl').prop('checked')) {
-                $('#_certPublic').show();
-                $('#_certPrivate').show();
-            } else {
-                $('#_certPublic').hide();
-                $('#_certPrivate').hide();
-            }
-            $('#_publishOnSubscribe').show();
-        }*/
+            $('._patterns').show();
+            $('#_certPublic').show();
+            $('#_certPrivate').show();
+        }
     }
 
     function init() {
@@ -165,8 +134,6 @@
         for (var key in settings) {
             setValue(key, settings[key], _onChange);
         }
-        //settings.sendAckToo = settings.sendAckToo || false;
-        //settings.webSocket  = settings.webSocket || false;
         //$('#pass_confirm').val($('#pass').val());
         init();
         fillSelectCertificates('#certPublic',  'public',  settings.certPublic);
@@ -261,22 +228,22 @@
         <tr>
             <td colspan='3'><h4 class="translate">Connection settings</h4></td>
         </tr>
-        <tr id="_url">
+        <tr class="_url">
             <td class="translate">URL:</td>
             <td><input type="text" id="url" class="value"/></td>
             <td></td>
         </tr>
-        <tr>
+        <tr class="_server">
             <td class="translate">Port:</td>
             <td><input id="port" type="text" size="5" class="value number"/></td>
             <td></td>
         </tr>
-        <tr id="_certPublic">
+        <tr class="_certPublic">
             <td class="translate">Public certificate:</td>
             <td><select id="certPublic" class="value"></select></td>
             <td></td>
         </tr>
-        <tr id="_certPrivate">
+        <tr class="_certPrivate">
             <td class="translate">Private certificate:</td>
             <td><select id="certPrivate" class="value"></select></td>
             <td></td>
@@ -302,7 +269,7 @@
         <tr>
             <td colspan='3'><h4 class="translate">Adapter settings</h4></td>
         </tr>
-        <tr id="_patterns">
+        <tr class="_patterns">
             <td class="translate">Patterns:</td>
             <td><input id="patterns" type="text" size="17" class="value"/></td>
             <td class="translate">Divided by comma</td>
@@ -312,29 +279,19 @@
             <td><input id="onchange" type="checkbox" class="value"/></td>
             <td class="translate"></td>
         </tr>
-        <tr id ="_publishOnSubscribe">
-            <td class="translate">Publish states on subscribe:</td>
-            <td><input id="publishOnSubscribe" type="checkbox" class="value"/></td>
+        <tr class="_server">
+            <td class="translate">Name of server:</td>
+            <td><input id="name" type="text" size="17" class="value"/></td>
             <td class="translate"></td>
         </tr>
-        <tr>
-            <td class="translate">Prefix for topics:</td>
-            <td><input id="prefix" type="text" size="17" class="value"/></td>
-            <td class="translate"></td>
-        </tr>
-        <tr>
+        <!--tr>
             <td class="translate">Trace output for every message:</td>
             <td><input id="debug" type="checkbox" class="value"/></td>
             <td class="translate"></td>
-        </tr>
+        </tr-->
         <tr>
             <td class="translate">Send states (ack=true) too:</td>
             <td><input id="sendAckToo" type="checkbox" class="value"/></td>
-            <td class="translate"></td>
-        </tr>
-        <tr>
-            <td class="translate">Max topic length:</td>
-            <td><input id="maxTopicLength" class="value" size="17"/></td>
             <td class="translate"></td>
         </tr>
     </table>

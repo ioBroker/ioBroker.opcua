@@ -70,10 +70,12 @@ adapter.on('unload', function () {
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
     adapter.log.debug('stateChange ' + id + ': ' + JSON.stringify(state));
-    var topic;
+    var type = states[id].type;
+
     // State deleted
     if (!state) {
-        delete states[id];
+        states[id] = {};
+        states[id].type = type;
         // If SERVER
         if (server) server.onStateChange(id);
         // if CLIENT
@@ -84,7 +86,7 @@ adapter.on('stateChange', function (id, state) {
         var oldVal = states[id] ? states[id].val : null;
         var oldAck = states[id] ? states[id].ack : null;
         states[id] = state;
-
+        states[id].type = type;
         // If value really changed
         if (!adapter.config.onchange || oldVal !== state.val || oldAck !== state.ack) {
             // If SERVER
@@ -130,8 +132,32 @@ function processMessages() {
     });
 }
 
-var cnt = 0;
-function readStatesForPattern(pattern) {
+function _readObjects(IDs, objects, cb) {
+    if (!IDs.length) {
+        cb(objects);
+    } else {
+        var id = IDs.pop();
+        adapter.getForeignObject(id, function (err, obj) {
+            if (err) adapter.log.error(err);
+            if (obj) {
+                objects[obj._id] = obj;
+            }
+            setTimeout(function () {
+                _readObjects(IDs, objects, cb);
+            }, 0);
+        });
+    }
+}
+
+function readObjects(states, cb) {
+    var IDs = [];
+    for (var id in states) {
+        IDs.push(id);
+    }
+    _readObjects(IDs, {}, cb);
+}
+
+function readStatesForPattern(pattern, cb) {
     adapter.getForeignStates(pattern, function (err, res) {
         if (!err && res) {
             if (!states) states = {};
@@ -143,38 +169,42 @@ function readStatesForPattern(pattern) {
             }
         }
         // If all patters answered, start client or server
-        if (!--cnt) {
-            if (adapter.config.type == 'client') {
-                client = new require(__dirname + '/lib/client')(adapter, states);
-            } else {
-                server = new require(__dirname + '/lib/server')(adapter, states);
-            }
-        }
+        if (cb) cb ();
     });
 }
 
 function main() {
     var cnt = 0;
     // Subscribe on own variables to publish it
-    if (adapter.config.publish) {
-        var parts = adapter.config.publish.split(',');
+    if (adapter.config.patterns) {
+        var parts = adapter.config.patterns.split(',');
         for (var t = 0; t < parts.length; t++) {
             adapter.subscribeForeignStates(parts[t].trim());
             cnt++;
-            readStatesForPattern(parts[t]);
+            readStatesForPattern(parts[t], function () {
+                if (!--cnt) {
+                    if (adapter.config.type == 'client') {
+                        client = new require(__dirname + '/lib/client')(adapter, states);
+                    } else {
+                        readObjects(states, function (objects) {
+                            server = new require(__dirname + '/lib/server')(adapter, states, objects);
+                        });
+                    }
+                }
+            });
         }
     } else {
         // subscribe for all variables
         adapter.subscribeForeignStates('*');
-        readStatesForPattern('*');
-    }
-    // If no subscription, start client or server
-    if (!cnt) {
-        if (adapter.config.type == 'client') {
-            client = new require(__dirname + '/lib/client')(adapter, states);
-        } else {
-            server = new require(__dirname + '/lib/server')(adapter, states);
-        }
+        readStatesForPattern('*', function () {
+            if (adapter.config.type == 'client') {
+                client = new require(__dirname + '/lib/client')(adapter, states);
+            } else {
+                readObjects(states, function (objects) {
+                    server = new require(__dirname + '/lib/server')(adapter, states, objects);
+                });
+            }
+        });
     }
 }
 
