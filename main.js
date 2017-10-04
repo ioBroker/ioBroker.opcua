@@ -4,7 +4,7 @@
  *
  *      (c) 2014-2015 bluefox
  *
- *      MIT License
+ *      CC-BY-NC-4.0 License
  *
  */
 
@@ -31,28 +31,21 @@ adapter.on('message', function (obj) {
 });
 
 adapter.on('ready', function () {
-    //adapter.config.pass = decrypt("Zgfr56gFe87jJOM", adapter.config.pass);
     if (adapter.config.type === 'server') {
-        var fs = require('fs');
-        // Read the certificates and store it under
-        // "privatekey.pem" and
-        // "certificate.pem"
-        // because mqtt does not support certificates not from file
-        adapter.getForeignObject('system.certificates', function (err, obj) {
-            if (err || !obj || !obj.native || !obj.native.certificates || !obj.native.certificates[adapter.config.certPublic] || !obj.native.certificates[adapter.config.certPrivate]) {
+        adapter.getCertificates(function (err, certificates, leConfig) {
+           if (err) {
                 adapter.log.error('Cannot enable secure OPC UA server, because no certificates found: ' + adapter.config.certPublic + ', ' + adapter.config.certPrivate);
                 setTimeout(function () {
                     process.exit(1);
                 }, 500);
             } else {
-                adapter.config.certificates = {
-                    key:  obj.native.certificates[adapter.config.certPrivate],
-                    cert: obj.native.certificates[adapter.config.certPublic]
-                };
-                fs.writeFileSync(__dirname + '/certificate.pem', adapter.config.certificates.cert);
-                fs.writeFileSync(__dirname + '/privatekey.pem',  adapter.config.certificates.key);
+            var fs = require('fs');
+            adapter.config.certificates = certificates;
+            adapter.config.leConfig     = leConfig;
 
-                main();
+            fs.writeFileSync(__dirname + '/certificate.pem', adapter.config.certificates.cert);
+            fs.writeFileSync(__dirname + '/privatekey.pem',  adapter.config.certificates.key);
+            main();
             }
         });
     } else {
@@ -131,10 +124,10 @@ function processMessages() {
         }
     });
 }
-
 function _readObjects(IDs, objects, cb) {
     if (!IDs.length) {
         cb(objects);
+
     } else {
         var id = IDs.pop();
         adapter.getForeignObject(id, function (err, obj) {
@@ -147,6 +140,20 @@ function _readObjects(IDs, objects, cb) {
             }, 0);
         });
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 function readObjects(states, cb) {
@@ -157,54 +164,51 @@ function readObjects(states, cb) {
     _readObjects(IDs, {}, cb);
 }
 
-function readStatesForPattern(pattern, cb) {
-    adapter.getForeignStates(pattern, function (err, res) {
-        if (!err && res) {
-            if (!states) states = {};
+function startOpc() {
+    if (adapter.config.type === 'client') {
+        var Client = require(__dirname + '/lib/client');
+        client = new Client(adapter, states);
+    } else {
+        var Server = require(__dirname + '/lib/server');
+        server = new Server(adapter, states);
+    }
+}
 
-            for (var id in res) {
-                if (!messageboxRegex.test(id)) {
-                    states[id] = res[id];
+function readStatesForPattern(tasks, callback) {
+    if (!tasks || !tasks.length) {
+        callback && callback();
+    } else {
+        var pattern = tasks.pop();
+
+        adapter.getForeignStates(pattern, function (err, res) {
+            if (!err && res) {
+                if (!states) states = {};
+
+                for (var id in res) {
+                    if (res.hasOwnProperty(id) && !messageboxRegex.test(id)) {
+                        states[id] = res[id];
+                    }
                 }
             }
-        }
-        // If all patters answered, start client or server
-        if (cb) cb ();
-    });
+            setImmediate(readStatesForPattern, tasks, callback);
+        });
+    }
 }
 
 function main() {
     var cnt = 0;
     // Subscribe on own variables to publish it
-    if (adapter.config.patterns) {
-        var parts = adapter.config.patterns.split(',');
+    if (adapter.config.publish) {
+        var parts = adapter.config.publish.split(',');
         for (var t = 0; t < parts.length; t++) {
             adapter.subscribeForeignStates(parts[t].trim());
-            cnt++;
-            readStatesForPattern(parts[t], function () {
-                if (!--cnt) {
-                    if (adapter.config.type == 'client') {
-                        client = new require(__dirname + '/lib/client')(adapter, states);
-                    } else {
-                        readObjects(states, function (objects) {
-                            server = new require(__dirname + '/lib/server')(adapter, states, objects);
-                        });
-                    }
-                }
-            });
         }
+        readStatesForPattern(parts, startOpc);
     } else {
         // subscribe for all variables
         adapter.subscribeForeignStates('*');
-        readStatesForPattern('*', function () {
-            if (adapter.config.type == 'client') {
-                client = new require(__dirname + '/lib/client')(adapter, states);
-            } else {
-                readObjects(states, function (objects) {
-                    server = new require(__dirname + '/lib/server')(adapter, states, objects);
-                });
-            }
-        });
+        readStatesForPattern('*');
+        startOpc();
     }
 }
 

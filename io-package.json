@@ -1,8 +1,8 @@
 {
     "common": {
         "name":                     "opcua",
-        "version": "0.0.1",
-        "title":                    "OPC-UA Adapter",
+        "version": "0.1.0",
+        "title":                    "OPC-UA Server Adapter",
         "desc":                     {
             "en": "The adapter allows to use OPC-UA server and client in ioBroker",
             "de": "Adapter ermöglicht die Benutzung von OPC-UA Server/Client mit ioBroker",
@@ -11,7 +11,7 @@
         "authors": [
             "bluefox <dogafox@gmail.com>"
         ],
-        "license":                  "MIT",
+        "license":                  "CC-BY-NC-4.0",
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
         "messagebox":               true,
@@ -34,8 +34,12 @@
         "port":        4334,
         "certPublic":  "",
         "certPrivate": "",
+        "certChained": "",
         "patterns":    "javascript.0.*",
-        "sendAckToo":  true
+        "sendAckToo":  true,
+        "leEnabled":                false,
+        "leUpdate":                 false,
+        "leCheckPort":              80
     },
     "objects": [
 
