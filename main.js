@@ -2,7 +2,7 @@
  *
  *      ioBroker OPC UA Adapter
  *
- *      (c) 2014-2015 bluefox
+ *      (c) 2016-2017 bluefox
  *
  *      CC-BY-NC-4.0 License
  *
@@ -126,31 +126,6 @@ function processMessages() {
             processMessages();
         }
     });
-}
-function _readObjects(IDs, objects, cb) {
-    if (!IDs.length) {
-        cb(objects);
-
-    } else {
-        var id = IDs.pop();
-        adapter.getForeignObject(id, function (err, obj) {
-            if (err) adapter.log.error(err);
-            if (obj) {
-                objects[obj._id] = obj;
-            }
-            setTimeout(function () {
-                _readObjects(IDs, objects, cb);
-            }, 0);
-        });
-    }
-}
-
-function readObjects(states, cb) {
-    var IDs = [];
-    for (var id in states) {
-        IDs.push(id);
-    }
-    _readObjects(IDs, {}, cb);
 }
 
 function startOpc() {
