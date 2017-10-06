@@ -14,6 +14,7 @@ var adapter  = utils.adapter('opcua');
 var server   = null;
 var client   = null;
 var states   = {};
+var objects  = {};
 
 var messageboxRegex = new RegExp('\\.messagebox$');
 
@@ -62,32 +63,34 @@ adapter.on('unload', function () {
 
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
-    adapter.log.debug('stateChange ' + id + ': ' + JSON.stringify(state));
-    var type = states[id].type;
+    if (id && states[id]) {
+        var type = states[id].type;
 
-    // State deleted
-    if (!state) {
-        states[id] = {};
-        states[id].type = type;
-        // If SERVER
-        if (server) server.onStateChange(id);
-        // if CLIENT
-        if (client) client.onStateChange(id);
-    } else
-    // you can use the ack flag to detect if state is desired or acknowledged
-    if ((adapter.config.sendAckToo || !state.ack) && !messageboxRegex.test(id)) {
-        var oldVal = states[id] ? states[id].val : null;
-        var oldAck = states[id] ? states[id].ack : null;
-        states[id] = state;
-        states[id].type = type;
-        // If value really changed
-        if (!adapter.config.onchange || oldVal !== state.val || oldAck !== state.ack) {
+        // State deleted
+        if (!state) {
+            states[id] = {};
+            if (type) states[id].type = type;
             // If SERVER
-            if (server) server.onStateChange(id, state);
+            if (server) server.onStateChange(id);
             // if CLIENT
-            if (client) client.onStateChange(id, state);
+            if (client) client.onStateChange(id);
+        } else
+        // you can use the ack flag to detect if state is desired or acknowledged
+        if ((adapter.config.sendAckToo || !state.ack) && !messageboxRegex.test(id)) {
+            var oldVal = states[id] ? states[id].val : null;
+            var oldAck = states[id] ? states[id].ack : null;
+            states[id] = state;
+            if (type) states[id].type = type;
+            // If value really changed
+            if (!adapter.config.onchange || oldVal !== state.val || oldAck !== state.ack) {
+                // If SERVER
+                if (server) server.onStateChange(id, state);
+                // if CLIENT
+                if (client) client.onStateChange(id, state);
+            }
         }
     }
+
 });
 
 function processMessage(obj) {
@@ -140,20 +143,6 @@ function _readObjects(IDs, objects, cb) {
             }, 0);
         });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 function readObjects(states, cb) {
@@ -167,10 +156,10 @@ function readObjects(states, cb) {
 function startOpc() {
     if (adapter.config.type === 'client') {
         var Client = require(__dirname + '/lib/client');
-        client = new Client(adapter, states);
+        client = new Client(adapter, states, objects);
     } else {
         var Server = require(__dirname + '/lib/server');
-        server = new Server(adapter, states);
+        server = new Server(adapter, states, objects);
     }
 }
 
@@ -184,19 +173,33 @@ function readStatesForPattern(tasks, callback) {
             if (!err && res) {
                 if (!states) states = {};
 
+                var count = 0;
                 for (var id in res) {
-                    if (res.hasOwnProperty(id) && !messageboxRegex.test(id)) {
+                    if (res.hasOwnProperty(id) && !messageboxRegex.test(id) && !id.match(/^system\./)) {
+                        count++;
                         states[id] = res[id];
                     }
                 }
+                adapter.getForeignObjects(pattern, function (err, objs) {
+                    for (var id in objs) {
+                        if (objs.hasOwnProperty(id) && !messageboxRegex.test(id) && !id.match(/^system\./) && objs[id] && objs[id].common && objs[id].type === 'state') {
+                            objects[id] = objs[id];
+                        }
+                    }
+                    adapter.log.info('Published ' + count + ' states');
+                    setImmediate(readStatesForPattern, tasks, callback);
+                });
+            } else {
+                adapter.log.error('Cannot read states: ' + err);
+                setTimeout(function () {
+                    process.exit(45);
+                }, 5000);
             }
-            setImmediate(readStatesForPattern, tasks, callback);
         });
     }
 }
 
 function main() {
-    var cnt = 0;
     // Subscribe on own variables to publish it
     if (adapter.config.publish) {
         var parts = adapter.config.publish.split(',');
@@ -207,8 +210,7 @@ function main() {
     } else {
         // subscribe for all variables
         adapter.subscribeForeignStates('*');
-        readStatesForPattern('*');
-        startOpc();
+        readStatesForPattern(['*'], startOpc);
     }
 }
 

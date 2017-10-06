@@ -10,57 +10,14 @@
 <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
 <script type="text/javascript" src="../../js/translate.js"></script>
 <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+<script type="text/javascript" src="words.js"></script>
 
-<!-- you have to define 2 functions in the global scope: -->
+
 <script type="text/javascript">
-    var isStarted =   null;
-
-    systemDictionary = {
-        "OPC UA adapter settings": {"en": "OPC UA adapter settings",  "de": "OPC UA Adapter-Einstellungen",  "ru": "Настройки драйвера OPC UA"},
-        "Type:":                  {"en": "Type:",                  "de": "Typ:",                   "ru": "Тип:"},
-        "Port:":                  {"en": "Port:",                  "de": "Port:",                  "ru": "Порт:"},
-        "User:":                  {"en": "User:",                  "de": "Username:",              "ru": "Имя пользователя:"},
-        "Password:":              {"en": "Password:",              "de": "Kennwort:",              "ru": "Пароль:"},
-        "Password confirmation:": {"en": "Password confirmation:", "de": "Kennwort-Wiederholung:", "ru": "Подтверждение пароля:"},
-        "URL:":                   {"en": "URL:",                   "de": "URL:",                   "ru": "URL:"},
-        "Secure:":                {"en": "Secure:",                "de": "SSL:",                   "ru": "SSL:"},
-        "Public certificate:":    {"en": "Public certificate:",    "de": "Publikzertifikat:",      "ru": "'Public' сертификат:"},
-        "Private certificate:":   {"en": "Private certificate:",   "de": "Privatzertifikat:",      "ru": "'Private' сертификат:"},
-        "Patterns:":              {"en": "Subscribe patterns:",    "de": "Subscribe patterns:",    "ru": "Patterns:"},
-        "Divided by comma":       {
-            "en": "Divided by comma, e.g. 'opcua/0/#,javascript/#'",
-            "de": "Mit Komma getrennt, z.B 'opcua/0/#,javascript/#'",
-            "ru": "Использовать запятую, как разделитеть. Например 'opcua/0/#,javascript/#'"
-        },
-        "Mask to publish":       {
-            "en": "e.g. 'opcua.0.*,javascript.*'",
-            "de": "z.B 'opcua.0.*,javascript.*'",
-            "ru": "Использовать запятую, как разделитеть. Например 'opcua.0.*,javascript.*'"
-        },
-        "Store only on change:":  {"en": "Store/Send only on change:",  "de": "Speichern/Senden nur bei Änderung:",  "ru": "Сохранять/Отсылать только изменения:"},
-        "Test connection":        {"en": "Test connection with Server", "de": "Teste Verbindung zum Server", "ru": "Проверить настройки"},
-        "Result: ":               {"en": "Result: ",               "de": "Ergebnis: ",             "ru": "Результат: "},
-        "connected":              {"en": "connected",              "de": "verbunden",              "ru": "успешно"},
-        "Main settings":          {"en": "Main settings",          "de": "Allgemeine Einstellungen","ru": "Основные настройки"},
-        "Connection settings":    {"en": "Connection settings",    "de": "Verbindungseinstellungen",    "ru": "Настройки соединения"},
-        "Authentication settings":{"en": "Authentication settings","de": "Authentication Einstellungen", "ru": "Настройки аутентификации"},
-        "Adapter settings":       {"en": "OPC UA settings",        "de": "OPC UA Einstellungen",     "ru": "Настройки OPC UA"},
-        "Send states (ack=true) too:":    {
-            "en": "Send states (ack=true) too:",
-            "de": "Sende auch Zustände (ack=true):",
-            "ru": "Посылать не только команды, но и состояния (ack=true):"
-        },
-        "Set certificates or load it first in the system settings (right top).":    {
-            "en": "Set certificates or load it first in the system settings (right top).",
-            "de": "Setze Zertificate oder lade die erst unter System/Einstellungen (oben rechts).",
-            "ru": "Нужно выбрать сертификаты или сначала загрузить их в системных настройках (вверху справа)."
-        },
-        "Server":                 {"en": "Server",                  "de": "Server",                 "ru": "Сервер"},
-        "Client":                 {"en": "Client",                  "de": "Client",                 "ru": "Клиент"}
-    };
+    var secret = 'Zgfr56gFe87jJOM';
 
     function encrypt(key, value) {
-        var result="";
+        var result = '';
         for(var i = 0; i < value.length; ++i) {
             result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
         }
@@ -68,7 +25,7 @@
     }
 
     function decrypt(key, value) {
-        var result = "";
+        var result = '';
         for(var i = 0; i < value.length; ++i) {
             result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
         }
@@ -76,18 +33,12 @@
     }
 
     function showHideSettings() {
-        if ($('#type').val() == 'client') {
-            $('#_url').show();
-            $('#test').show();
-            $('#_patterns').hide();
-            $('#_certPublic').hide();
-            $('#_certPrivate').hide();
+        if ($('#type').val() === 'client') {
+            $('#_client').show();
+            $('#_server').hide();
         }else {
-            $('._url').hide();
-            $('#test').hide();
-            $('._patterns').show();
-            $('#_certPublic').show();
-            $('#_certPrivate').show();
+            $('#_client').hide();
+            $('#_server').show();
         }
     }
 
@@ -98,16 +49,15 @@
     }
 
     function setValue(id, value, onChange) {
+        if (id === 'pass') value = decrypt(secret, value);
 
-        if (id === 'pass') value = decrypt('Zgfr56gFe87jJOM', value);
-
-        // example: select elements with id=key and class=value and insert value
-        if ($('#' + id + '.value').attr('type') == 'checkbox') {
-            $('#' + id + '.value').prop('checked', value).change(function () {
+        var $value = $('#' + id + '.value');
+        if ($value.attr('type') === 'checkbox') {
+            $value.prop('checked', value).change(function () {
                 onChange();
             });
         } else {
-            $('#' + id + '.value').val(value).change(function () {
+            $value.val(value).change(function () {
                 onChange();
             }).keyup(function () {
                 // Check that only numbers entered
@@ -131,28 +81,35 @@
 
     // the function loadSettings has to exist ...
     function load(settings, _onChange) {
-        for (var key in settings) {
-            setValue(key, settings[key], _onChange);
-        }
-        //$('#pass_confirm').val($('#pass').val());
-        init();
-        fillSelectCertificates('#certPublic',  'public',  settings.certPublic);
-        fillSelectCertificates('#certPrivate', 'private', settings.certPrivate);
-        _onChange(false);
+        $('#tabs').tabs();
+
+        socket.emit('getObject', 'system.config', function (err, obj) {
+            if (obj && obj.native && obj.native.secret) secret = obj.native.secret;
+
+            for (var key in settings) {
+                if (settings.hasOwnProperty(key)) {
+                    setValue(key, settings[key], _onChange);
+                }
+            }
+            //$('#pass_confirm').val($('#pass').val());
+            init();
+            fillSelectCertificates('#certPublic',  'public',  settings.certPublic);
+            fillSelectCertificates('#certPrivate', 'private', settings.certPrivate);
+            _onChange(false);
+        });
     }
 
     function test() {
-        var newValue = JSON.stringify(getSettings());
-        if (!common.enabled) {
-            showMessage(_('Enable first the adapter to test client.'));
-            return;
-        }
-        if (changed) {
-            showMessage(_('First save the adapter'));
-            return;
-        }
-        sendTo('opcua.' + instance, 'test', getSettings(), function (result) {
-            showMessage(_('Result: ') + _(result));
+        getIsAdapterAlive(function (isAlive) {
+            if (!common.enabled && !isAlive) {
+                showMessage(_('Enable first the adapter to test client.'));
+            } else {
+                $('#test').button('disable');
+                sendTo('opcua.' + instance, 'test', $('#url'), function (result) {
+                    $('#test').button('enable');
+                    showMessage(_('Result: ') + _(result));
+                });
+            }
         });
     }
 
@@ -160,7 +117,7 @@
         var ids = id.split('_');
 
         if (ids.length === 1) {
-            if (ids[0] === 'pass') value = encrypt('Zgfr56gFe87jJOM', value);
+            if (ids[0] === 'pass') value = encrypt(secret, value);
             obj[id] = value;
         } else if (ids.length === 2) {
             if (!obj[ids[0]]) obj[ids[0]] = {};
@@ -179,7 +136,7 @@
             var $this = $(this);
             var id = $this.attr('id');
 
-            if ($this.attr('type') == 'checkbox') {
+            if ($this.attr('type') === 'checkbox') {
                 obj = saveHelper(obj, id, $this.prop('checked'))
             } else {
                 obj = saveHelper(obj, id, $this.val())
@@ -188,19 +145,17 @@
         return obj;
     }
 
-    // ... and the function save has to exist.
-    // you have to make sure the callback is called with the settings object as first param!
     function save(callback) {
         /*if ($('#pass').val() != $('#pass_confirm').val()) {
             showMessage(_('Password confirmation is not equal with password'));
             return;
         }
-        if ($('#ssl').prop('checked') && $('#type').val() == 'server' && (!$('#certPrivate').val() || !$('#certPublic').val())) {
+        */
+        if ($('#type').val() === 'server' && (!$('#certPrivate').val() || !$('#certPublic').val())) {
             showMessage(_('Set certificates or load it first in the system settings (right top).'));
             return;
-        }*/
+        }
 
-        // example: select elements with class=value and build settings object
         callback(getSettings());
     }
 </script>
@@ -213,89 +168,116 @@
         <td style="padding-top: 20px; padding-left: 10px"><h3 class="translate">OPC UA adapter settings</h3></td>
     </tr></table>
 
-    <table>
-        <tr>
-            <td colspan='3'><h4 class="translate">Main settings</h4></td>
-        </tr>
-        <tr>
-            <td class="translate">Type:</td>
-            <td><select id="type" class="value">
-                <option value="client" class="translate">Client</option>
-                <option value="server" class="translate">Server</option>
-            </select></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td colspan='3'><h4 class="translate">Connection settings</h4></td>
-        </tr>
-        <tr class="_url">
-            <td class="translate">URL:</td>
-            <td><input type="text" id="url" class="value"/></td>
-            <td></td>
-        </tr>
-        <tr class="_server">
-            <td class="translate">Port:</td>
-            <td><input id="port" type="text" size="5" class="value number"/></td>
-            <td></td>
-        </tr>
-        <tr class="_certPublic">
-            <td class="translate">Public certificate:</td>
-            <td><select id="certPublic" class="value"></select></td>
-            <td></td>
-        </tr>
-        <tr class="_certPrivate">
-            <td class="translate">Private certificate:</td>
-            <td><select id="certPrivate" class="value"></select></td>
-            <td></td>
-        </tr>
-        <!--tr>
-            <td colspan='3'><h4 class="translate">Authentication settings</h4></td>
-        </tr>
-        <tr>
-            <td class="translate">User:</td>
-            <td><input id="user" type="text" size="17" class="value"/></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td class="translate">Password:</td>
-            <td><input id="pass" type="password" size="17" class="value"/></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td class="translate">Password confirmation:</td>
-            <td><input id="pass_confirm" type="password" size="17"/></td>
-            <td></td>
-        </tr-->
-        <tr>
-            <td colspan='3'><h4 class="translate">Adapter settings</h4></td>
-        </tr>
-        <tr class="_patterns">
-            <td class="translate">Patterns:</td>
-            <td><input id="patterns" type="text" size="17" class="value"/></td>
-            <td class="translate">Divided by comma</td>
-        </tr>
-        <tr>
-            <td class="translate">Store only on change:</td>
-            <td><input id="onchange" type="checkbox" class="value"/></td>
-            <td class="translate"></td>
-        </tr>
-        <tr class="_server">
-            <td class="translate">Name of server:</td>
-            <td><input id="name" type="text" size="17" class="value"/></td>
-            <td class="translate"></td>
-        </tr>
-        <!--tr>
-            <td class="translate">Trace output for every message:</td>
-            <td><input id="debug" type="checkbox" class="value"/></td>
-            <td class="translate"></td>
-        </tr-->
-        <tr>
-            <td class="translate">Send states (ack=true) too:</td>
-            <td><input id="sendAckToo" type="checkbox" class="value"/></td>
-            <td class="translate"></td>
-        </tr>
-    </table>
-    <button id="test" class="translate">Test connection</button>
-
+    <div id="tabs">
+        <ul>
+            <li><a href="#tabs-1" class="translate">General</a></li>
+            <li class="_server"><a href="#tabs-2" class="translate">Server</a></li>
+            <li class="_client"><a href="#tabs-3" class="translate">Client</a></li>
+        </ul>
+        <div id="tabs-1">
+            <table>
+                <tr>
+                    <td colspan='3'><h4 class="translate">Main settings</h4></td>
+                </tr>
+                <tr>
+                    <td><label for="type"  class="translate">Type:</label></td>
+                    <td><select id="type" class="value">
+                        <option value="client" class="translate">Client</option>
+                        <option value="server" class="translate">Server</option>
+                    </select></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <div id="tabs-2">
+            <table>
+                <tr>
+                    <td><label for="port"  class="translate">Port:</label></td>
+                    <td><input id="port" type="text" size="5" class="value number"/></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label for="certPublic"  class="translate">Public certificate:</label></td>
+                    <td><select id="certPublic" class="value"></select></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label for="certPrivate"  class="translate">Private certificate:</label></td>
+                    <td><select id="certPrivate" class="value"></select></td>
+                    <td></td>
+                </tr>
+                <!--tr>
+                    <td colspan='3'><h4 class="translate">Authentication settings</h4></td>
+                </tr>
+                <tr>
+                    <td class="translate">User:</td>
+                    <td><input id="user" type="text" size="17" class="value"/></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="translate">Password:</td>
+                    <td><input id="pass" type="password" size="17" class="value"/></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="translate">Password confirmation:</td>
+                    <td><input id="pass_confirm" type="password" size="17"/></td>
+                    <td></td>
+                </tr-->
+                <tr>
+                    <td colspan='3'><h4 class="translate">Adapter settings</h4></td>
+                </tr>
+                <tr class="_patterns">
+                    <td><label for="patterns"  class="translate">Patterns:</label></td>
+                    <td><input id="patterns" type="text" size="17" class="value"/></td>
+                    <td class="translate">Divided by comma</td>
+                </tr>
+                <tr>
+                    <td><label for="onchange"  class="translate">Store only on change:</label></td>
+                    <td><input id="onchange" type="checkbox" class="value"/></td>
+                    <td class="translate"></td>
+                </tr>
+                <tr class="_server">
+                    <td><label for="name"  class="translate">Name of server:</label></td>
+                    <td><input id="name" type="text" size="17" class="value"/></td>
+                    <td class="translate"></td>
+                </tr>
+                <tr>
+                    <td><label for="sendAckToo"  class="translate">Send states (ack=true) too:</label></td>
+                    <td><input id="sendAckToo" type="checkbox" class="value"/></td>
+                    <td class="translate"></td>
+                </tr>
+            </table>
+        </div>
+        <div id="tabs-3">
+            <table>
+                <tr>
+                    <td colspan='3'><h4 class="translate">Connection settings</h4></td>
+                </tr>
+                <tr class="_url">
+                    <td><label for="url"  class="translate">URL:</label></td>
+                    <td><input type="text" id="url" class="value"/></td>
+                    <td><button id="test" class="translate">Test connection</button></td>
+                </tr>
+            </table>
+            <h4 class="translate">Object addresses:</h4>
+            <div id="values" style="width: 100%; height: calc(100% - 230px)">
+                <button class="table-button-add" style="margin-left: 10px; width: 1.5em; height: 1.5em"></button>
+                <div style="width: 100%; height: calc(100% - 30px); overflow: auto;">
+                    <table class="table-values" style="width: 100%;">
+                        <thead>
+                        <tr>
+                            <th data-name="_index"   style="width: 40px" class="translate"></th>
+                            <th data-name="name"     style="width: 30%" class="translate">Name</th>
+                            <th data-name="ip"       class="translate">IP Address</th>
+                            <th data-name="room" data-type="select"    class="translate">Room</th>
+                            <th data-buttons="delete" style="width: 40px"></th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </html>
