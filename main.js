@@ -9,7 +9,7 @@
  */
 
 var utils    = require(__dirname + '/lib/utils'); // Get common adapter utils
-var adapter  = utils.adapter('opcua');
+var adapter  = utils.Adapter('opcua');
 
 var server   = null;
 var client   = null;
