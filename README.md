@@ -2,7 +2,7 @@
 ioBroker OPC-UA Adapter
 ==============
 
-[![NPM version](http://img.shields.io/npm/v/iobroker.opcua.svg)](https://www.npmjs.com/package/iobroker.opcua)
+![Number of Installations](http://iobroker.live/badges/opcua-installed.svg) ![Number of Installations](http://iobroker.live/badges/opcua-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.opcua.svg)](https://www.npmjs.com/package/iobroker.opcua)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.opcua.svg)](https://www.npmjs.com/package/iobroker.opcua)
 [![Tests](https://travis-ci.org/ioBroker/ioBroker.opcua.svg?branch=master)](https://travis-ci.org/ioBroker/ioBroker.opcua)
 
