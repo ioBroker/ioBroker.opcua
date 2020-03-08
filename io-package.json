@@ -1,45 +1,71 @@
 {
     "common": {
         "name":                     "opcua",
-        "version": "0.1.0",
-        "title":                    "OPC-UA Server Adapter",
+        "version": "0.2.2",
+        "news": {
+            "0.2.2": {
+                "en": "Beta release",
+                "de": "Beta-Version",
+                "ru": "Бета-версия",
+                "pt": "Versão beta",
+                "nl": "Beta release",
+                "fr": "Sortie bêta",
+                "it": "Rilascio beta",
+                "es": "Lanzamiento Beta",
+                "pl": "Wersja beta",
+                "zh-cn": "测试版"
+            }
+        },
+        "title":                    "OPC-UA Server/Client",
         "desc":                     {
             "en": "The adapter allows to use OPC-UA server and client in ioBroker",
-            "de": "Adapter ermöglicht die Benutzung von OPC-UA Server/Client mit ioBroker",
-            "ru": "Драйвер позволяет использовать OPC-UA сервер или клиент с ioBroker"
+            "de": "Der Adapter ermöglicht die Verwendung von OPC-UA-Server und -Client in ioBroker",
+            "ru": "Адаптер позволяет использовать OPC-UA сервер и клиент в ioBroker",
+            "pt": "O adaptador permite usar o servidor e o cliente OPC-UA no ioBroker",
+            "nl": "Met de adapter kan de OPC-UA-server en -client in ioBroker worden gebruikt",
+            "fr": "L'adaptateur permet d'utiliser le serveur et le client OPC-UA dans ioBroker",
+            "it": "L'adattatore consente di utilizzare il server e il client OPC-UA in ioBroker",
+            "es": "El adaptador permite usar el servidor y el cliente OPC-UA en ioBroker",
+            "pl": "Adapter pozwala na korzystanie z serwera i klienta OPC-UA w ioBroker",
+            "zh-cn": "该适配器允许在ioBroker中使用OPC-UA服务器和客户端"
         },
         "authors": [
             "bluefox <dogafox@gmail.com>"
         ],
-        "license":                  "CC-BY-NC-4.0",
+        "license":                  "LicenseRef-LICENSE",
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
         "messagebox":               true,
         "readme":                   "https://github.com/ioBroker/ioBroker.opcua/blob/master/README.md",
         "loglevel":                 "info",
+        "compact":                  true,
+        "materialize":              false,
         "icon":                     "opcua.png",
         "keywords":                 ["OPC", "OPC UA"],
         "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.opcua/master/admin/opcua.png",
-		"type":                     "communication",
-        "config": {
-            "width" :    800,
-            "height" :   850,
-            "minWidth":  400,
-            "minHeight": 400
-        }
+		"type":                     "communication"
     },
     "native": {
-        "type":        "server",
+        "type":        "client",
         "name":        "",
         "port":        4334,
+        "authType":    "none",
+        "license":     "",
+
+        "basicUserName":     "",
+        "basicUserPassword": "",
+
+        "certSecurityPolicy": "none",
+        "certSecurityMode": "none",
+
         "certPublic":  "",
         "certPrivate": "",
         "certChained": "",
+
         "patterns":    "javascript.0.*",
         "sendAckToo":  true,
-        "leEnabled":                false,
-        "leUpdate":                 false,
-        "leCheckPort":              80
+
+        "clientEndpointUrl": "opc.tcp://"
     },
     "objects": [
 
@@ -50,6 +76,17 @@
             "type": "channel",
             "common": {
                 "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id":  "info.event",
+            "type": "state",
+            "common": {
+                "name": "Events for GUI",
+                "type": "string",
+                "write": false,
+                "read": true
             },
             "native": {}
         }

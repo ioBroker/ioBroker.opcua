@@ -1,6 +1,5 @@
 ![Logo](admin/opcua.png)
-ioBroker OPC-UA Adapter
-==============
+# ioBroker OPC-UA Adapter
 
 ![Number of Installations](http://iobroker.live/badges/opcua-installed.svg) ![Number of Installations](http://iobroker.live/badges/opcua-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.opcua.svg)](https://www.npmjs.com/package/iobroker.opcua)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.opcua.svg)](https://www.npmjs.com/package/iobroker.opcua)
@@ -8,7 +7,9 @@ ioBroker OPC-UA Adapter
 
 [![NPM](https://nodei.co/npm/iobroker.opcua.png?downloads=true)](https://nodei.co/npm/iobroker.opcua/)
 
-Actually only Server is implemented.
+## Client
+
+## Server
 Following data types are supported:
 - number
 - string
@@ -16,12 +17,21 @@ Following data types are supported:
 
 ## Changelog
 
+### 0.2.2 (2020-03-08)
+* (bluefox) Beta release
+
+### 0.2.0 (2019-12-09)
+* (bluefox) Client is implemented
+
 ### 0.0.1 (2016-05-13)
 * (bluefox) support of server (actual no authentication)
 
 ## License
+Commercial license.
 
-CC-BY-NC-4.0
+Copyright (c) 2016-2020, Bluefox <dogafox@gmail.com>
 
-Copyright (c) 2016-2017, bluefox<dogafox@gmail.com>
+All Rights Reserved.
 
+The full text of the license could be found [here](LICENSE). 
+ 

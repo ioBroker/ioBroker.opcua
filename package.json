@@ -1,43 +1,46 @@
 {
   "name": "iobroker.opcua",
   "description": "The adapter allows to use OPC-UA server and client in ioBroker.",
-  "version": "0.1.0",
+  "version": "0.2.2",
   "author": "bluefox <dogafox@gmail.com>",
   "homepage": "https://github.com/ioBroker/ioBroker.opcua",
   "repository": {
     "type": "git",
     "url": "https://github.com/ioBroker/ioBroker.opcua"
   },
-  "licenses": [
-    {
-      "type": "CC-BY-NC-4.0",
-      "url": "https://github.com/ioBroker/ioBroker.opcua/blob/master/LICENSE"
-    }
-  ],
   "keywords": [
     "iobroker",
     "OPC",
     "OPC UA"
   ],
   "dependencies": {
-    "node-opcua": "^0.1.0-7",
-    "@iobroker/adapter-core": "^1.0.3"
+    "node-opcua": "^2.4.1",
+    "@iobroker/adapter-core": "^1.0.3",
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-replace": "^1.0.1",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-jscs": "^3.0.1",
-    "grunt-http": "^2.2.0",
-    "mocha": "^4.1.0",
-    "chai": "^4.1.2"
+    "babel-core": "^6.26.3",
+    "babel-minify": "^0.5.1",
+    "@babel/preset-env": "^7.8.7",
+    "babelify": "^10.0.0",
+    "browserify": "^16.5.0",
+    "gulp": "^4.0.2",
+    "gulp-exec": "^4.0.0",
+    "gulp-connect": "^5.7.0",
+    "gulp-watch": "^5.0.1",
+    "gulp-replace": "^1.0.0",
+    "del": "^5.1.0",
+    "gulp-javascript-obfuscator": "^1.1.6",
+    "vinyl-source-stream": "^2.0.0",
+    "vinyl-sourcemaps-apply": "^0.2.1"
   },
   "bugs": {
     "url": "https://github.com/ioBroker/ioBroker.opcua/issues"
   },
   "main": "main.js",
   "scripts": {
-    "test": "node node_modules/mocha/bin/mocha --exit"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "node node_modules/gulp/bin/gulp --gulpfile gulpfile.js default"
   },
-  "license": "CC-BY-NC-4.0"
+  "license": "LicenseRef-LICENSE"
 }
