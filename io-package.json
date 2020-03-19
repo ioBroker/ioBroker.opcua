@@ -1,9 +1,9 @@
 {
     "common": {
         "name":                     "opcua",
-        "version": "0.3.0",
+        "version": "0.3.1",
         "news": {
-            "0.3.0": {
+            "0.3.1": {
                 "en": "Checked the UUID of server",
                 "de": "Überprüfte die UUID des Servers",
                 "ru": "Проверил UUID сервера",
