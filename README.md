@@ -16,6 +16,8 @@ Following data types are supported:
 - boolean
 
 ## Changelog
+### 0.3.0 (2020-03-19)
+* (bluefox) Checked the UUID of server
 
 ### 0.2.3 (2020-03-08)
 * (bluefox) Beta release
@@ -29,7 +31,7 @@ Following data types are supported:
 ## License
 Commercial license.
 
-Copyright (c) 2016-2020, Bluefox <dogafox@gmail.com>
+Copyright (c) 2016-2020, Bluefox <dogafox@gmail.com>, ioBroker GmbH <info@iobroker.net>
 
 All Rights Reserved.
 

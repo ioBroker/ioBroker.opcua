@@ -1,8 +1,20 @@
 {
     "common": {
         "name":                     "opcua",
-        "version": "0.2.3",
+        "version": "0.3.0",
         "news": {
+            "0.3.0": {
+                "en": "Checked the UUID of server",
+                "de": "Überprüfte die UUID des Servers",
+                "ru": "Проверил UUID сервера",
+                "pt": "Verificado o UUID do servidor",
+                "nl": "De UUID van de server gecontroleerd",
+                "fr": "Vérifié l'UUID du serveur",
+                "it": "Controllato l'UUID del server",
+                "es": "Comprobado el UUID del servidor",
+                "pl": "Sprawdzono UUID serwera",
+                "zh-cn": "检查服务器的UUID"
+            },
             "0.2.3": {
                 "en": "Beta release",
                 "de": "Beta-Version",
