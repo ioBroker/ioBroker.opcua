@@ -16,7 +16,7 @@ Following data types are supported:
 - boolean
 
 ## Changelog
-### 0.3.1 (2020-03-19)
+### 0.3.2 (2020-03-19)
 * (bluefox) Checked the UUID of server
 
 ### 0.2.3 (2020-03-08)
