@@ -16,6 +16,9 @@ Following data types are supported:
 - boolean
 
 ## Changelog
+### 0.3.3 (2020-04-30)
+* (bluefox) Fixed the error with browse
+
 ### 0.3.2 (2020-03-19)
 * (bluefox) Checked the UUID of server
 

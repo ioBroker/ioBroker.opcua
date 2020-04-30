@@ -1,8 +1,20 @@
 {
     "common": {
         "name":                     "opcua",
-        "version": "0.3.2",
+        "version": "0.3.3",
         "news": {
+            "0.3.3": {
+                "en": "Corrected the error with browse",
+                "de": "Der Fehler beim Durchsuchen wurde behoben",
+                "ru": "Исправлена ошибка с просмотром",
+                "pt": "Corrigido o erro com a navegação",
+                "nl": "De fout gecorrigeerd met bladeren",
+                "fr": "Correction de l'erreur lors de la navigation",
+                "it": "Correzione dell'errore con la ricerca",
+                "es": "Corregido el error con navegar",
+                "pl": "Poprawiono błąd podczas przeglądania",
+                "zh-cn": "更正了浏览错误"
+            },
             "0.3.2": {
                 "en": "Checked the UUID of server",
                 "de": "Überprüfte die UUID des Servers",
