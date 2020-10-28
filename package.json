@@ -1,7 +1,7 @@
 {
   "name": "iobroker.opcua",
   "description": "The adapter allows to use OPC-UA server and client in ioBroker.",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "author": "bluefox <dogafox@gmail.com>",
   "homepage": "https://github.com/ioBroker/ioBroker.opcua",
   "repository": {
@@ -14,8 +14,8 @@
     "OPC UA"
   ],
   "dependencies": {
-    "node-opcua": "^2.4.1",
-    "@iobroker/adapter-core": "^1.0.3",
+    "node-opcua": "^2.22.0",
+    "@iobroker/adapter-core": "^2.4.0",
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
@@ -25,11 +25,11 @@
     "babelify": "^10.0.0",
     "browserify": "^16.5.0",
     "gulp": "^4.0.2",
-    "gulp-exec": "^4.0.0",
+    "gulp-exec": "^5.0.0",
     "gulp-connect": "^5.7.0",
     "gulp-watch": "^5.0.1",
     "gulp-replace": "^1.0.0",
-    "del": "^5.1.0",
+    "del": "^6.0.0",
     "gulp-javascript-obfuscator": "^1.1.6",
     "vinyl-source-stream": "^2.0.0",
     "vinyl-sourcemaps-apply": "^0.2.1"
