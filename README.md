@@ -16,7 +16,7 @@ Following data types are supported:
 - boolean
 
 ## Changelog
-### 0.4.0 (2020-10-28)
+### 0.4.1 (2020-11-01)
 * (bluefox) Updated configuration GUI
 
 ### 0.3.3 (2020-04-30)

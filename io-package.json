@@ -1,10 +1,19 @@
 {
     "common": {
         "name":                     "opcua",
-        "version": "0.4.0",
+        "version": "0.4.1",
         "news": {
-            "0.4.0": {
-                "en": "Updated configuration GUI"
+            "0.4.1": {
+                "en": "Updated configuration GUI",
+                "de": "Aktualisierte Konfigurations-GUI",
+                "ru": "Обновленный графический интерфейс конфигурации",
+                "pt": "GUI de configuração atualizada",
+                "nl": "Bijgewerkte configuratie-GUI",
+                "fr": "Interface graphique de configuration mise à jour",
+                "it": "GUI di configurazione aggiornata",
+                "es": "GUI de configuración actualizada",
+                "pl": "Zaktualizowany graficzny interfejs użytkownika",
+                "zh-cn": "更新了配置GUI"
             },
             "0.3.3": {
                 "en": "Corrected the error with browse",
