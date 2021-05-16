@@ -22,6 +22,9 @@ Following data types are supported:
 -->
 
 ## Changelog
+### 0.4.3 (2021-05-16)
+* (bluefox) Make it admin4 compatible
+
 ### 0.4.2 (2021-05-16)
 * (bluefox) Corrected Test-button in GUI
 

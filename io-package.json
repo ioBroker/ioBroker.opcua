@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "opcua",
-        "version": "0.4.2",
+        "version": "0.4.3",
         "news": {
+            "0.4.3": {
+                "en": "Make it admin4 compatible",
+                "de": "Machen Sie es admin4 kompatibel",
+                "ru": "Сделайте его совместимым с admin4",
+                "pt": "Torne-o compatível com admin4",
+                "nl": "Maak het admin4-compatibel",
+                "fr": "Rendez-le compatible avec admin4",
+                "it": "Rendilo compatibile con admin4",
+                "es": "Hágalo compatible con admin4",
+                "pl": "Spraw, aby był zgodny z admin4",
+                "zh-cn": "使它与admin4兼容"
+            },
             "0.4.2": {
                 "en": "Corrected Test-button in GUI",
                 "de": "Korrigierter Test-Button in der GUI",
@@ -83,6 +95,7 @@
         "license": "LicenseRef-LICENSE",
         "platform": "Javascript/Node.js",
         "mode": "daemon",
+        "nogit": true,
         "messagebox": true,
         "readme": "https://github.com/ioBroker/ioBroker.opcua/blob/master/README.md",
         "loglevel": "info",
