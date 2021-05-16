@@ -8,6 +8,7 @@
 [![NPM](https://nodei.co/npm/iobroker.opcua.png?downloads=true)](https://nodei.co/npm/iobroker.opcua/)
 
 ## Client
+**Just now only client is implemented.**
 
 ## Server
 Following data types are supported:
@@ -15,7 +16,15 @@ Following data types are supported:
 - string
 - boolean
 
+<!--
+	Placeholder for the next version (at the beginning of the line):
+	### __WORK IN PROGRESS__
+-->
+
 ## Changelog
+### 0.4.2 (2021-05-16)
+* (bluefox) Corrected Test-button in GUI
+
 ### 0.4.1 (2020-11-01)
 * (bluefox) Updated configuration GUI
 
@@ -37,7 +46,7 @@ Following data types are supported:
 ## License
 Commercial license.
 
-Copyright (c) 2016-2020, Bluefox <dogafox@gmail.com>, ioBroker GmbH <info@iobroker.net>
+Copyright (c) 2016-2021, Bluefox <dogafox@gmail.com>, ioBroker GmbH <info@iobroker.net>
 
 All Rights Reserved.
 

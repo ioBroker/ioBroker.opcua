@@ -1,8 +1,20 @@
 {
     "common": {
-        "name":                     "opcua",
-        "version": "0.4.1",
+        "name": "opcua",
+        "version": "0.4.2",
         "news": {
+            "0.4.2": {
+                "en": "Corrected Test-button in GUI",
+                "de": "Korrigierter Test-Button in der GUI",
+                "ru": "Исправлена кнопка Test в графическом интерфейсе.",
+                "pt": "Botão de teste corrigido na GUI",
+                "nl": "Test-knop in GUI gecorrigeerd",
+                "fr": "Bouton de test corrigé dans l'interface graphique",
+                "it": "Pulsante di test corretto nella GUI",
+                "es": "Botón de prueba corregido en GUI",
+                "pl": "Poprawiony przycisk Test w GUI",
+                "zh-cn": "修正了GUI中的测试按钮"
+            },
             "0.4.1": {
                 "en": "Updated configuration GUI",
                 "de": "Aktualisierte Konfigurations-GUI",
@@ -52,8 +64,8 @@
                 "zh-cn": "测试版"
             }
         },
-        "title":                    "OPC-UA Server/Client",
-        "desc":                     {
+        "title": "OPC-UA Server/Client",
+        "desc": {
             "en": "The adapter allows to use OPC-UA server and client in ioBroker",
             "de": "Der Adapter ermöglicht die Verwendung von OPC-UA-Server und -Client in ioBroker",
             "ru": "Адаптер позволяет использовать OPC-UA сервер и клиент в ioBroker",
@@ -68,47 +80,43 @@
         "authors": [
             "bluefox <dogafox@gmail.com>"
         ],
-        "license":                  "LicenseRef-LICENSE",
-        "platform":                 "Javascript/Node.js",
-        "mode":                     "daemon",
-        "messagebox":               true,
-        "readme":                   "https://github.com/ioBroker/ioBroker.opcua/blob/master/README.md",
-        "loglevel":                 "info",
-        "compact":                  true,
-        "materialize":              false,
-        "icon":                     "opcua.png",
-        "keywords":                 ["OPC", "OPC UA"],
-        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.opcua/master/admin/opcua.png",
-		"type":                     "communication"
+        "license": "LicenseRef-LICENSE",
+        "platform": "Javascript/Node.js",
+        "mode": "daemon",
+        "messagebox": true,
+        "readme": "https://github.com/ioBroker/ioBroker.opcua/blob/master/README.md",
+        "loglevel": "info",
+        "compact": true,
+        "materialize": false,
+        "icon": "opcua.png",
+        "keywords": [
+            "OPC",
+            "OPC UA"
+        ],
+        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.opcua/master/admin/opcua.png",
+        "type": "communication"
     },
     "native": {
-        "type":        "client",
-        "name":        "",
-        "port":        4334,
-        "authType":    "none",
-        "license":     "",
-
-        "basicUserName":     "",
+        "type": "client",
+        "name": "",
+        "port": 4334,
+        "authType": "none",
+        "license": "",
+        "basicUserName": "",
         "basicUserPassword": "",
-
         "certSecurityPolicy": "none",
         "certSecurityMode": "none",
-
-        "certPublic":  "",
+        "certPublic": "",
         "certPrivate": "",
         "certChained": "",
-
-        "patterns":    "javascript.0.*",
-        "sendAckToo":  true,
-
+        "patterns": "javascript.0.*",
+        "sendAckToo": true,
         "clientEndpointUrl": "opc.tcp://"
     },
-    "objects": [
-
-    ],
+    "objects": [],
     "instanceObjects": [
         {
-            "_id":  "info",
+            "_id": "info",
             "type": "channel",
             "common": {
                 "name": "Information"
@@ -116,7 +124,7 @@
             "native": {}
         },
         {
-            "_id":  "info.event",
+            "_id": "info.event",
             "type": "state",
             "common": {
                 "name": "Events for GUI",
