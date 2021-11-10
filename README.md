@@ -22,6 +22,9 @@ Following data types are supported:
 -->
 
 ## Changelog
+### __WORK IN PROGRESS__
+* (bluefox) Implemented the writing of states in the client mode
+
 ### 0.4.3 (2021-05-16)
 * (bluefox) Make it admin4 compatible
 

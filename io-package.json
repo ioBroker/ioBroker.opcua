@@ -122,8 +122,9 @@
         "certPublic": "",
         "certPrivate": "",
         "certChained": "",
+        "onchange": false,
         "patterns": "javascript.0.*",
-        "sendAckToo": true,
+        "sendAckToo": false,
         "clientEndpointUrl": "opc.tcp://"
     },
     "objects": [],
