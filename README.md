@@ -22,7 +22,7 @@ Following data types are supported:
 -->
 
 ## Changelog
-### __WORK IN PROGRESS__
+### 0.4.5 (2021-11-13)
 * (bluefox) Implemented the writing of states in the client mode
 
 ### 0.4.3 (2021-05-16)
@@ -56,5 +56,4 @@ Copyright (c) 2016-2021, Bluefox <dogafox@gmail.com>, ioBroker GmbH <info@iobrok
 
 All Rights Reserved.
 
-The full text of the license could be found [here](LICENSE). 
- 
+The full text of the license could be found [here](LICENSE).
