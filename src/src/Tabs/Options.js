@@ -7,7 +7,6 @@ import {
     InputLabel,
     MenuItem,
     TextField,
-    Fab,
     Snackbar,
     IconButton,
     CircularProgress,
@@ -20,7 +19,6 @@ import { MdFlashOn as IconConnect } from 'react-icons/md';
 import { MdClose as IconClose } from 'react-icons/md';
 
 import {
-    Utils,
     I18n,
     Logo,
     Message as DialogMessage,
