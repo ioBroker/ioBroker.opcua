@@ -89,6 +89,19 @@
       }
     },
     "title": "OPC-UA Server/Client",
+    "titleLang": {
+      "en": "OPC-UA Server/Client",
+      "de": "OPC-UA Server/Client",
+      "ru": "OPC-UA сервер/клиент",
+      "pt": "Servidor/Cliente OPC-UA",
+      "nl": "OPC-UA-server/-client",
+      "fr": "Serveur/Client OPC-UA",
+      "it": "Server/Client OPC-UA",
+      "es": "Servidor/Cliente OPC-UA",
+      "pl": "Serwer/Klient OPC-UA",
+      "uk": "OPC-UA сервер/клієнт",
+      "zh-cn": "OPC-UA服务器/客户端"
+    },
     "desc": {
       "en": "The adapter allows to use OPC-UA server and client in ioBroker",
       "de": "Der Adapter ermöglicht die Verwendung von OPC-UA-Server und -Client in ioBroker",
@@ -104,7 +117,10 @@
     "authors": [
       "bluefox <dogafox@gmail.com>"
     ],
-    "license": "LicenseRef-LICENSE",
+    "licenseInformation": {
+      "type": "free",
+      "link": "https://github.com/ioBroker/ioBroker.opcua/blob/master/LICENSE"
+    },
     "platform": "Javascript/Node.js",
     "mode": "daemon",
     "nogit": true,
@@ -120,6 +136,7 @@
       "OPC",
       "OPC UA"
     ],
+    "tier": 2,
     "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.opcua/master/admin/opcua.png",
     "type": "protocols"
   },

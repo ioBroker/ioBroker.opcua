@@ -1,0 +1,31 @@
+Are you sure?
+Cancel
+Cannot check license: %s
+Check license online
+Client
+Close
+Error
+Invalid license
+License
+Load configuration from file
+OPC UA Server URL
+Ok
+Options
+Path
+Place your ioBroker OPC-UA license here
+Save
+Save and close
+Save configuration to file
+Server
+Success
+Test connection
+Type
+Value
+Variables
+Wrong license UUID %s, expected %s
+Wrong license name %s
+Here you can get a license:
+License is not OK
+License is OK
+not connected
+Timeout

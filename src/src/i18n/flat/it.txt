@@ -1,0 +1,31 @@
+Sei sicuro?
+Annulla
+Impossibile controllare la licenza: %s
+Controlla la licenza online
+Cliente
+Vicino
+Errore
+Licenza non valida
+Licenza
+Carica la configurazione dal file
+URL del server OPC UA
+Ok
+Opzioni
+Sentiero
+Inserisci qui la tua licenza ioBroker OPC-UA
+Salva
+Salva e chiudi
+Salva la configurazione in un file
+server
+Successo
+Test di connessione
+Genere
+Valore
+variabili
+Licenza UUID %s errata, %s prevista
+Nome licenza errato %s
+Qui puoi ottenere una licenza:
+La licenza non è OK
+La licenza è OK
+non connesso
+Tempo scaduto
