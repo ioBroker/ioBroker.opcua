@@ -3,19 +3,6 @@
     "name": "opcua",
     "version": "1.0.1",
     "news": {
-      "1.0.1": {
-        "en": "License changes to the free license (MIT)\nMinimum node.js version 16",
-        "de": "Lizenzänderungen an der freien Lizenz (MIT)\nMinimum node.js Version 16",
-        "ru": "Изменения лицензии на бесплатную лицензию (MIT)\nВерсия 16",
-        "pt": "Alterações de licença para a licença livre (MIT)\nNode mínimo.js versão 16",
-        "nl": "Licentiewijzigingen in de vrije licentie (MIT)\nMinimum node.js versie 16",
-        "fr": "Modification de licence à la licence libre (MIT)\nNœud minimum.js version 16",
-        "it": "Modifiche di licenza alla licenza gratuita (MIT)\nVersione minima node.js 16",
-        "es": "La licencia cambia a la licencia gratuita (MIT)\nNodo mínimo.js versión 16",
-        "pl": "Zmiana licencji na darmową licencję (MIT)\nMinimalna node.js wersja 16",
-        "uk": "Ліцензійні зміни до безкоштовної ліцензії (МІТ)\nМінімальний вузол.js версія 16",
-        "zh-cn": "免费许可证的更改(MIT)\n最小节点.js第16版"
-      },
       "0.4.5": {
         "en": "Implemented the writing of states in the client mode",
         "de": "Das Schreiben von Zuständen im Client-Modus implementiert",
