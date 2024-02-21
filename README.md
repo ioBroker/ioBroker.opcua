@@ -21,7 +21,7 @@ The following data types are supported:
 	### **WORK IN PROGRESS**
 -->
 ## Changelog
-### **WORK IN PROGRESS**
+### 1.0.2 (2024-02-21)
 * (bluefox) License changes to the free license (MIT)
 * (bluefox) Minimum node.js version 16
 
