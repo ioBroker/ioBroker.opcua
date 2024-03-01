@@ -17,7 +17,7 @@
     "OPC UA"
   ],
   "dependencies": {
-    "node-opcua": "^2.120.0",
+    "node-opcua": "^2.122.0",
     "@iobroker/adapter-core": "^3.0.4",
     "jsonwebtoken": "^9.0.2"
   },
