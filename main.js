@@ -11,15 +11,13 @@
 
 const utils        = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName  = require('./package.json').name.split('.').pop();
-const checkLicense = require('./lib/checkLicense');
+const fs = require('fs');
 
 let server = null;
 let client = null;
 let states = {};
 let Client;
-let l;
 const objects  = {};
-const fs = require('fs');
 let certificateFile = `${__dirname}/certificates/certificate.pem`;
 let privateKeyFile  = `${__dirname}/certificates/privatekey.pem`;
 const DEBUG = false;
@@ -399,7 +397,7 @@ function main(adapter) {
         readStatesForPattern(patterns, () => startOpc(adapter));
     } else {
         // client
-        adapter.subscribeStatesAsync(adapter.namespace + '.vars.*')
+        adapter.subscribeStatesAsync(`${adapter.namespace}.vars.*`)
             .then(() => startOpc(adapter));
     }
 }
