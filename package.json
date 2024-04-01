@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "node-opcua": "^2.122.0",
-    "@iobroker/adapter-core": "^3.0.4",
+    "@iobroker/adapter-core": "^3.0.6",
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
