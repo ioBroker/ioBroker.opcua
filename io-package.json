@@ -119,6 +119,7 @@
       "bluefox <dogafox@gmail.com>"
     ],
     "licenseInformation": {
+      "license": "MIT",
       "type": "free",
       "link": "https://github.com/ioBroker/ioBroker.opcua/blob/master/LICENSE"
     },
@@ -146,7 +147,6 @@
     "name": "",
     "port": 4334,
     "authType": "none",
-    "license": "",
     "basicUserName": "",
     "basicUserPassword": "",
     "certSecurityPolicy": "none",
