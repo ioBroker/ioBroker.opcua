@@ -1,7 +1,5 @@
 /.idea
 /node_modules
 /*.pem
-/package-lock.json
-/src/package-lock.json
 /admin/*
 /admin/**/*
