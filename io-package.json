@@ -90,7 +90,6 @@
         "zh-cn": "更新了配置GUI"
       }
     },
-    "title": "OPC-UA Server/Client",
     "titleLang": {
       "en": "OPC-UA Server/Client",
       "de": "OPC-UA Server/Client",
@@ -114,6 +113,7 @@
       "it": "L'adattatore consente di utilizzare il server e il client OPC-UA in ioBroker",
       "es": "El adaptador permite usar el servidor y el cliente OPC-UA en ioBroker",
       "pl": "Adapter pozwala na korzystanie z serwera i klienta OPC-UA w ioBroker",
+      "uk": "Адаптер дозволяє використовувати OPC-UA сервер та клієнт в ioBroker",
       "zh-cn": "该适配器允许在ioBroker中使用OPC-UA服务器和客户端"
     },
     "authors": [
@@ -121,8 +121,10 @@
     ],
     "licenseInformation": {
       "license": "MIT",
-      "type": "free",
-      "link": "https://github.com/ioBroker/ioBroker.opcua/blob/master/LICENSE"
+      "type": "free"
+    },
+    "adminUI": {
+      "config": "html"
     },
     "platform": "Javascript/Node.js",
     "mode": "daemon",
