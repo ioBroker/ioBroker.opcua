@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "opcua",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "news": {
+      "1.1.0": {
+        "en": "GUI was migrated to a non-style framework",
+        "de": "GUI wurde zu einem untypischen Rahmen migriert",
+        "ru": "GUI был перенесен в рамки, не связанные с стилем",
+        "pt": "GUI foi migrado para uma estrutura não-estilo",
+        "nl": "GUI is gemigreerd naar een non-style framework",
+        "fr": "L'interface graphique a été migrée vers un cadre non style",
+        "it": "GUI è stata migrata a un quadro non-stile",
+        "es": "GUI was migrated to a non-style framework",
+        "pl": "Interfejs GUI został przeniesiony na niestylowe ramy",
+        "uk": "GUI був мігрований в рамку не стилі",
+        "zh-cn": "GUI 已迁移到非样式框架"
+      },
       "1.0.3": {
         "en": "License changes to the free license (MIT)\nMinimum node.js version 16",
         "de": "Lizenzänderungen an der freien Lizenz (MIT)\nMinimum node.js Version 16",
@@ -75,18 +88,6 @@
         "es": "GUI de configuración actualizada",
         "pl": "Zaktualizowany graficzny interfejs użytkownika",
         "zh-cn": "更新了配置GUI"
-      },
-      "0.3.3": {
-        "en": "Corrected the error with browse",
-        "de": "Der Fehler beim Durchsuchen wurde behoben",
-        "ru": "Исправлена ошибка с просмотром",
-        "pt": "Corrigido o erro com a navegação",
-        "nl": "De fout gecorrigeerd met bladeren",
-        "fr": "Correction de l'erreur lors de la navigation",
-        "it": "Correzione dell'errore con la ricerca",
-        "es": "Corregido el error con navegar",
-        "pl": "Poprawiono błąd podczas przeglądania",
-        "zh-cn": "更正了浏览错误"
       }
     },
     "title": "OPC-UA Server/Client",
