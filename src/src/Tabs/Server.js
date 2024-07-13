@@ -1,64 +1,16 @@
-import React, {Component} from 'react';
-import { withStyles } from '@mui/styles';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { CircularProgress } from '@mui/material';
 
 import { Message as MessageDialog } from '@iobroker/adapter-react-v5';
 
-const styles = theme => ({
+const styles = {
     tab: {
         width: '100%',
         height: '100%'
     },
-    column: {
-        display: 'inline-block',
-        verticalAlign: 'top',
-        marginRight: 20,
-        height: '100%',
-        overflow: 'hidden',
-        width: 'calc(50% - 20px)',
-        minWidth: 300,
-        maxWidth: 450,
-    },
-    columnDiv: {
-        height: 'calc(100% - 60px)',
-        overflow: 'auto',
-        minWidth: 300,
-    },
-    enumLineEnabled: {
-        position: 'absolute',
-        right: 0,
-        top: 0,
-    },
-    enumLineEdit: {
-        //float: 'right'
-        position: 'absolute',
-        top: 5,
-        right: 50,
-    },
-    enumLineName: {
-
-    },
-    enumLineSubName:{
-        fontStyle: 'italic',
-    },
-    enumLine: {
-        height: 48,
-        width: '100%',
-        position: 'relative',
-    },
-    enumLineId: {
-        display: 'block',
-        fontStyle: 'italic',
-        fontSize: 12,
-    },
-    columnHeader: {
-        background: theme.palette.primary.light,
-        padding: 10,
-        color: theme.palette.primary.contrastText,
-    }
-});
+};
 
 class Server extends Component {
     constructor(props) {
@@ -81,7 +33,7 @@ class Server extends Component {
         if (this.state.loading) {
             return <CircularProgress />;
         }
-        return <div className={this.props.classes.tab}>
+        return <div style={styles.tab}>
             {this.renderMessage()}
         </div>;
     }
@@ -98,4 +50,4 @@ Server.propTypes = {
     socket: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Server);
+export default Server;

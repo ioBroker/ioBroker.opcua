@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
 import {
     Checkbox,
     Fab,
-    CircularProgress
+    CircularProgress, Box
 } from '@mui/material';
 
 import { Error as DialogError, I18n } from '@iobroker/adapter-react-v5';
@@ -24,17 +23,17 @@ const WIDTH_VAL  = 200;
 const MARGIN_VAL = 8;
 const WIDTH_NAME = WIDTH_VAL + MARGIN_VAL + WIDTH_TYPE;
 
-const styles = theme => ({
+const styles = {
     tab: {
         width: '100%',
         height: '100%',
         overflow: 'hidden',
     },
-    tree: {
+    tree: theme => ({
         height: 'calc(100% - 75px)',
         overflow: 'auto',
         color: theme.palette.mode === 'dark' ? '#FFF' : undefined,
-    },
+    }),
     header: {
         background: '#666666',
         color: 'white',
@@ -73,8 +72,6 @@ const styles = theme => ({
         marginLeft: 2,
         verticalAlign: 'middle',
     },
-    itemVariable: {
-    },
     itemUnsupported: {
         opacity: 0.7,
     },
@@ -100,7 +97,7 @@ const styles = theme => ({
         whiteSpace: 'nowrap',
         fontSize: 14,
     },
-});
+};
 
 class Browser extends Component {
     constructor(props) {
@@ -324,8 +321,13 @@ class Browser extends Component {
         const indeterminate = checked && (!node.list || !node.list.filter(item => item.native && item.native.nodeClass === 'Variable').every(item =>
             renderContext.cachedFullPathes.includes(`${item.fullPath}>>`)));
 
-        return <div key={node.fullPath} className={this.props.classes.folderDiv} style={style} onClick={() => node.id && this.toggleFolder(node)}>
-            {node.list && node.list.length ? (<Checkbox className={this.props.classes.itemCheckbox} indeterminate={indeterminate} checked={checked} size="small" onClick={e => {
+        return <Box
+            key={node.fullPath}
+            sx={styles.folderDiv}
+            style={style}
+            onClick={() => node.id && this.toggleFolder(node)}
+        >
+            {node.list && node.list.length ? (<Checkbox style={styles.itemCheckbox} indeterminate={indeterminate} checked={checked} size="small" onClick={e => {
                 e.stopPropagation();
                 if (indeterminate) {
                     // disable all
@@ -339,16 +341,16 @@ class Browser extends Component {
                     }
                 }
             }}/>) : null}
-            {!node.fullPath || this.state.expanded.includes(node.fullPath) ? (<IconFolderOpened className={this.props.classes.folderIcon}/>) : (<IconFolderClosed className={this.props.classes.folderIcon}/>)}
+            {!node.fullPath || this.state.expanded.includes(node.fullPath) ? (<IconFolderOpened style={styles.folderIcon}/>) : (<IconFolderClosed style={styles.folderIcon}/>)}
             {node.name}
             {this.state.requesting[node.id] ? <CircularProgress
                 variant="indeterminate"
                 disableShrink
-                className={this.props.classes.folderWait}
+                style={styles.folderWait}
                 size={18}
                 thickness={4}
             /> : null}
-        </div>;
+        </Box>;
     }
 
     getIobName(fullPath, _names, _root) {
@@ -414,32 +416,51 @@ class Browser extends Component {
         if (type.length > 256) {
             type = `${type.substring(0, 256)}...`;
         }
-        return <div key={node.fullPath} className={`${this.props.classes.itemDiv} ${this.props.classes.itemVariable}`} style={style}>
+        return <Box
+            key={node.fullPath}
+            sx={styles.itemDiv}
+            style={style}
+        >
             {this.state.changing.includes(node.id) ? <CircularProgress
                     variant="indeterminate"
                     disableShrink
-                    className={this.props.classes.folderWait}
+                    style={styles.folderWait}
                     size={22}
                     thickness={4}
                 /> :
                 <Checkbox
-                    className={this.props.classes.itemCheckbox}
+                    style={styles.itemCheckbox}
                     checked={!!this.state.subscribes[node.id]}
                     size="small"
                     onClick={() => this.onSelectUnselectVariable([node])}
                 />}
-            <div className={this.props.classes.itemName} style={{ width: `calc(100% - ${WIDTH_NAME + 22}px)` }}>
+            <div
+                style={{
+                    ...styles.itemName,
+                    width: `calc(100% - ${WIDTH_NAME + 22}px)`
+                }}
+            >
                 {typeof node.name !== 'string' ? JSON.stringify(node.name) : node.name}
             </div>
-            <div className={this.props.classes.itemType} title={type.length > 10 ? type : ''}>{type}</div>
-            <div className={this.props.classes.itemVal}  title={val.length  > 10 ? val  : ''}>{val}</div>
-        </div>;
+            <div style={styles.itemType} title={type.length > 10 ? type : ''}>{type}</div>
+            <div style={styles.itemVal}  title={val.length  > 10 ? val  : ''}>{val}</div>
+        </Box>;
     }
 
     renderUnsupported(node, level) {
-        const style = {paddingLeft: level * 20, width: `calc(100% - ${level * 20}px)`};
-        return <div key={node.fullPath} className={`${this.props.classes.itemDiv} ${this.props.classes.itemUnsupported}`} style={style}>
-            <div style={{width: 24, display: 'inline-block'}}>&nbsp;</div>
+        const style = {
+            paddingLeft: level * 20,
+            width: `calc(100% - ${level * 20}px)`,
+        };
+        return <div
+            key={node.fullPath}
+            style={{
+                ...styles.itemDiv,
+                ...styles.itemUnsupported,
+                ...style,
+            }}
+        >
+            <div style={{ width: 24, display: 'inline-block' }}>&nbsp;</div>
             {node.name}
         </div>;
     }
@@ -488,23 +509,23 @@ class Browser extends Component {
             cachedFullPathes: Object.keys(this.state.subscribes).map(item => `${this.state.subscribes[item].fullPath}>>`),
         };
 
-        return <div className={this.props.classes.tab}>
+        return <div style={styles.tab}>
             <Fab
-                className={this.props.classes.refresh}
+                style={styles.refresh}
                 disabled={this.state.refreshing || !!Object.keys(this.state.requesting).length}
                 onClick={() => this.onRefresh()}
                 size="small"
             >
                 <IconRefresh/>
             </Fab>
-            <div key="header" className={this.props.classes.header} style={{ width: '100%' }}>
-                <div className={this.props.classes.itemName} style={{ paddingLeft: 3, width: `calc(100% - ${WIDTH_NAME + 11}px)`, borderRight: '1px solid white' }}>{I18n.t('Path')}</div>
-                <div className={this.props.classes.itemType} style={{ paddingLeft: 3 }}>{I18n.t('Type')}</div>
-                <div className={this.props.classes.itemVal} style={{ paddingRight: 3, borderLeft: '1px solid white' }}>{I18n.t('Value')}</div>
+            <div key="header" style={{ ...styles.header, width: '100%' }}>
+                <div style={{ ...styles.itemName, paddingLeft: 3, width: `calc(100% - ${WIDTH_NAME + 11}px)`, borderRight: '1px solid white' }}>{I18n.t('Path')}</div>
+                <div style={{ ...styles.itemType, paddingLeft: 3 }}>{I18n.t('Type')}</div>
+                <div style={{ ...styles.itemVal, paddingRight: 3, borderLeft: '1px solid white' }}>{I18n.t('Value')}</div>
             </div>
-            <div className={this.props.classes.tree}>
+            <Box sx={styles.tree}>
                 {this.renderItem(null, null, renderContext)}
-            </div>
+            </Box>
             {this.renderError()}
         </div>;
     }
@@ -520,4 +541,4 @@ Browser.propTypes = {
     socket: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Browser);
+export default Browser;

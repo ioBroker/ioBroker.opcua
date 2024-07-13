@@ -1,5 +1,4 @@
 import React from 'react';
-import { withStyles } from '@mui/styles';
 import {
     AppBar,
     Tab,
@@ -7,15 +6,18 @@ import {
 } from '@mui/material';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 
-import GenericApp from '@iobroker/adapter-react-v5/GenericApp';
-import { I18n, Loader, AdminConnection } from '@iobroker/adapter-react-v5';
+import {
+    I18n,
+    Loader,
+    AdminConnection,
+    GenericApp,
+} from '@iobroker/adapter-react-v5';
 
 import TabOptions from './Tabs/Options';
 import TabClient from './Tabs/Client';
 import TabServer from './Tabs/Server';
 
-const styles = theme => ({
-    root: {},
+const styles = {
     tabContent: {
         padding: 10,
         height: 'calc(100% - 64px - 48px - 20px)',
@@ -26,7 +28,7 @@ const styles = theme => ({
         height: 'calc(100% - 64px - 48px - 20px - 38px)',
         overflow: 'auto'
     }
-});
+};
 
 class App extends GenericApp {
     constructor(props) {
@@ -100,7 +102,7 @@ class App extends GenericApp {
                         </Tabs>
                     </AppBar>
 
-                    <div className={this.isIFrame ? this.props.classes.tabContentIFrame : this.props.classes.tabContent}>
+                    <div style={this.isIFrame ? styles.tabContentIFrame : styles.tabContent}>
                         {(this.state.selectedTab === 'options' || !this.state.selectedTab) && <TabOptions
                             key="options"
                             common={this.common}
@@ -140,4 +142,4 @@ class App extends GenericApp {
     }
 }
 
-export default withStyles(styles)(App);
+export default App;

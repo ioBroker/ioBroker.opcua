@@ -37,5 +37,6 @@
   "license_not_ok": "Ліцензія не в порядку",
   "license_ok": "Ліцензія в порядку",
   "not connected": "не з'єднано",
-  "timeout": "Час вийшов"
+  "timeout": "Час вийшов",
+  "Certificates": "Сертифікати"
 }

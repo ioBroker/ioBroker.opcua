@@ -37,5 +37,6 @@
   "Password repeat mismatch": "La repetición de contraseña no coincide",
   "Authentication": "Autenticación",
   "None": "Ninguno",
-  "Password": "Contraseña"
+  "Password": "Contraseña",
+  "Certificates": "Certificados"
 }

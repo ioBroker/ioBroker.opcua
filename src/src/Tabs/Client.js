@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
 import { Message as MessageDialog } from '@iobroker/adapter-react-v5';
 
 import Browser from '../Components/Browser';
 
-const styles = theme => ({
+const styles = {
     tab: {
         width: '100%',
         height: '100%',
     },
-});
+};
 
 class Client extends Component {
     constructor(props) {
@@ -74,7 +73,7 @@ class Client extends Component {
     }
 
     render() {
-        return <div className={this.props.classes.tab}>
+        return <div style={styles.tab}>
             {this.renderMessage()}
             <Browser
                 socket={this.props.socket}
@@ -100,4 +99,4 @@ Client.propTypes = {
     socket: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Client);
+export default Client;

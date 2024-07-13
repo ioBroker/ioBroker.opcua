@@ -37,5 +37,6 @@
   "Password repeat mismatch": "Password repeat mismatch",
   "Authentication": "Authentication",
   "None": "None",
-  "Password": "Password"
+  "Password": "Password",
+  "Certificates": "Certificates"
 }

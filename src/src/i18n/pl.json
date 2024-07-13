@@ -37,5 +37,6 @@
   "Password repeat mismatch": "Niezgodność powtórzeń hasła",
   "Authentication": "Uwierzytelnianie",
   "None": "Nic",
-  "Password": "Hasło"
+  "Password": "Hasło",
+  "Certificates": "Certyfikaty"
 }

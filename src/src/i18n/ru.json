@@ -37,5 +37,6 @@
   "Password repeat mismatch": "Несовпадение повтора пароля",
   "Authentication": "Аутентификация",
   "None": "Нет",
-  "Password": "Пароль"
+  "Password": "Пароль",
+  "Certificates": "Сертификаты"
 }

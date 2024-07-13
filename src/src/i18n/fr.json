@@ -37,5 +37,6 @@
   "Password repeat mismatch": "Incompatibilité de répétition du mot de passe",
   "Authentication": "Authentification",
   "None": "Aucun",
-  "Password": "Mot de passe"
+  "Password": "Mot de passe",
+  "Certificates": "Certificats"
 }

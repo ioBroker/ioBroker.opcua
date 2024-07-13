@@ -37,5 +37,6 @@
   "Password repeat mismatch": "密码重复不匹配",
   "Authentication": "验证",
   "None": "没有任何",
-  "Password": "密码"
+  "Password": "密码",
+  "Certificates": "证书"
 }

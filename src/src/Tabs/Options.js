@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
 import {
@@ -15,8 +14,10 @@ import {
     Checkbox, Button,
 } from '@mui/material';
 
-import { MdFlashOn as IconConnect } from 'react-icons/md';
-import { MdClose as IconClose } from 'react-icons/md';
+import {
+    MdFlashOn as IconConnect,
+    MdClose as IconClose,
+} from 'react-icons/md';
 
 import {
     I18n,
@@ -25,7 +26,7 @@ import {
     Error as DialogError,
 } from '@iobroker/adapter-react-v5';
 
-const styles = theme => ({
+const styles = {
     tab: {
         width: '100%',
         minHeight: '100%'
@@ -83,10 +84,10 @@ const styles = theme => ({
         marginRight: 20,
         marginBottom: 24,
     },
-    checkBoxLabel: {
+    checkBoxLabel: theme => ({
         color: theme.palette.mode === 'dark' ? '#EEE' : '#111',
-    },
-});
+    }),
+};
 
 class Options extends Component {
     constructor(props) {
@@ -148,7 +149,7 @@ class Options extends Component {
                     key="close"
                     aria-label="Close"
                     color="inherit"
-                    className={this.props.classes.close}
+                    style={styles.close}
                     onClick={() => this.setState({ toast: '' })}
                 >
                     <IconClose />
@@ -169,7 +170,7 @@ class Options extends Component {
     }
 
     renderCert(type) {
-        return <FormControl className={this.props.classes.certSelector} variant="standard">
+        return <FormControl style={styles.certSelector} variant="standard">
             <InputLabel>{type === 'public' ? I18n.t('Public certificate') : I18n.t('Private certificate')}</InputLabel>
             <Select
                 variant="standard"
@@ -189,7 +190,7 @@ class Options extends Component {
                     variant="standard"
                     disabled={this.state.requesting}
                     key="clientEndpointUrl"
-                    className={this.props.classes.serverURL}
+                    style={styles.serverURL}
                     label={I18n.t('OPC UA Server URL')}
                     value={this.props.native.clientEndpointUrl}
                     onChange={e => this.props.onChange('clientEndpointUrl', e.target.value)}
@@ -215,7 +216,7 @@ class Options extends Component {
             return <TextField
                 variant="standard"
                 disabled={this.state.requesting}
-                className={this.props.classes.patterns}
+                style={styles.patterns}
                 label={I18n.t('Mask for states')}
                 value={this.props.native.patterns}
                 onChange={e => this.props.onChange('patterns', e.target.value)}
@@ -242,7 +243,7 @@ class Options extends Component {
     }
 
     renderSecurityPolicy() {
-        return <FormControl className={this.props.classes.certSecurityPolicy} variant="standard">
+        return <FormControl style={styles.certSecurityPolicy} variant="standard">
             <InputLabel>{I18n.t('Security policy')}</InputLabel>
             <Select
                 variant="standard"
@@ -267,7 +268,7 @@ class Options extends Component {
     }
 
     renderSecurityMode() {
-        return <FormControl className={this.props.classes.certSecurityMode} variant="standard">
+        return <FormControl style={styles.certSecurityMode} variant="standard">
             <InputLabel>{I18n.t('Security mode')}</InputLabel>
             <Select
                 variant="standard"
@@ -289,7 +290,7 @@ class Options extends Component {
                 variant="standard"
                 disabled={this.state.requesting}
                 key="Login"
-                className={this.props.classes.basic}
+                style={styles.basic}
                 label={I18n.t('Username')}
                 value={this.props.native.basicUserName}
                 onChange={e => this.props.onChange('basicUserName', e.target.value)}
@@ -299,7 +300,7 @@ class Options extends Component {
                 disabled={this.state.requesting}
                 key="Password"
                 type="password"
-                className={this.props.classes.basic}
+                style={styles.basic}
                 label={I18n.t('Password')}
                 value={this.props.native.basicUserPassword}
                 onChange={e => {
@@ -315,7 +316,7 @@ class Options extends Component {
                 type="password"
                 error={this.props.native.basicUserPassword !== this.state.passwordRepeat}
                 helperText={this.props.native.basicUserPassword !== this.state.passwordRepeat ? this.textPasswordMismatch : ''}
-                className={this.props.classes.basic}
+                style={styles.basic}
                 label={I18n.t('Password repeat')}
                 value={this.state.passwordRepeat}
                 onChange={e => {
@@ -382,14 +383,14 @@ class Options extends Component {
             {this.props.native.authType === 'cert' && this.props.native.certSecurityMode === 'signAndEncrypt' ? this.renderSecurityPolicy() : null}
             {this.props.native.authType === 'basic' ? this.renderBasicAuth() : null}
             <FormControlLabel
-                classes={{ label: this.props.classes.checkBoxLabel }}
+                sx={{ '& .MuiFormControlLabel-label': styles.checkBoxLabel }}
                 control={<Checkbox
                     checked={!!this.props.native.sendAckToo}
                     onChange={e => this.props.onChange('sendAckToo', e.target.checked)} />}
                 label={I18n.t('Write values on update too (not only with ack=false)')}
             />
             <FormControlLabel
-                classes={{ label: this.props.classes.checkBoxLabel }}
+                sx={{ '& .MuiFormControlLabel-label': styles.checkBoxLabel }}
                 control={<Checkbox
                     checked={!!this.props.native.onchange}
                     onChange={e => this.props.onChange('onchange', e.target.checked)} />}
@@ -417,4 +418,4 @@ Options.propTypes = {
     socket: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Options);
+export default Options;
