@@ -21,7 +21,7 @@ The following data types are supported:
 	### **WORK IN PROGRESS**
 -->
 ## Changelog
-### **WORK IN PROGRESS**
+### 1.2.0 (2025-07-09)
 * (bluefox) GUI was migrated vite
 * (bluefox) Backend was changed for new js-controller
 
