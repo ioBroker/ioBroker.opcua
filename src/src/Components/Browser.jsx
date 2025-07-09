@@ -1,25 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import {
-    Checkbox,
-    Fab,
-    CircularProgress, Box
-} from '@mui/material';
+import { Checkbox, Fab, CircularProgress, Box } from '@mui/material';
 
 import { Error as DialogError, I18n } from '@iobroker/adapter-react-v5';
 
-import {
-    MdRefresh as IconRefresh,
-} from 'react-icons/md';
+import { MdRefresh as IconRefresh } from 'react-icons/md';
 
-import {
-    FaFolder as IconFolderClosed,
-    FaFolderOpen as IconFolderOpened
-} from 'react-icons/fa';
+import { FaFolder as IconFolderClosed, FaFolderOpen as IconFolderOpened } from 'react-icons/fa';
 
 const WIDTH_TYPE = 100;
-const WIDTH_VAL  = 200;
+const WIDTH_VAL = 200;
 const MARGIN_VAL = 8;
 const WIDTH_NAME = WIDTH_VAL + MARGIN_VAL + WIDTH_TYPE;
 
@@ -40,7 +31,7 @@ const styles = {
         fontWeight: 'bold',
     },
     refresh: {
-        margin: '10px 10px 5px 20px'
+        margin: '10px 10px 5px 20px',
     },
     folderDiv: {
         width: '100%',
@@ -48,23 +39,19 @@ const styles = {
         cursor: 'pointer',
         '&:hover': {
             background: '#c3c3c3',
-        }
+        },
     },
     itemDiv: {
         width: '100%',
         '&:hover': {
             background: '#c3c3c3',
-        }
+        },
     },
     itemCheckbox: {
         padding: 0,
     },
-    detailsDiv: {
-
-    },
-    folderWait: {
-
-    },
+    detailsDiv: {},
+    folderWait: {},
     folderIcon: {
         width: 18,
         height: 18,
@@ -104,7 +91,7 @@ class Browser extends Component {
         super(props);
 
         const mapping = {};
-        Object.keys(this.props.subscribes).forEach(nodeId => mapping[this.props.subscribes[nodeId].id] = nodeId);
+        Object.keys(this.props.subscribes).forEach(nodeId => (mapping[this.props.subscribes[nodeId].id] = nodeId));
 
         this.state = {
             errorText: '',
@@ -119,7 +106,7 @@ class Browser extends Component {
             refreshing: false,
             requestItems: true,
             details: null,
-            root: {list: null, id: '', name: 'Root', fullPath: ''},
+            root: { list: null, id: '', name: 'Root', fullPath: '' },
             currentPath: this.props.path || '',
             values: {},
         };
@@ -150,19 +137,28 @@ class Browser extends Component {
         });
 
         expanded.sort();
-        this.setState({expanded});
+        this.setState({ expanded });
     }
 
     renderError() {
         if (!this.state.errorText) {
             return null;
         }
-        return <DialogError text={this.state.errorText} title={I18n.t('Error')} onClose={() => this.setState({errorText: ''})} />;
+        return (
+            <DialogError
+                text={this.state.errorText}
+                title={I18n.t('Error')}
+                onClose={() => this.setState({ errorText: '' })}
+            />
+        );
     }
 
     onStateChange(id, state) {
         if (this.state.mapping[id]) {
-            const actualValue = this.state[`val_${this.state.mapping[id]}`] || {value: {dataType: state ? typeof state.val : '', value: 'null'}, statusCode: {value: 0}};
+            const actualValue = this.state[`val_${this.state.mapping[id]}`] || {
+                value: { dataType: state ? typeof state.val : '', value: 'null' },
+                statusCode: { value: 0 },
+            };
             if (!this.updateTimer) {
                 this.updateState = {};
                 this.updateState[`val_${this.state.mapping[id]}`] = {
@@ -171,8 +167,8 @@ class Browser extends Component {
                         dataType: actualValue.value.dataType,
                     },
                     statusCode: {
-                        value: actualValue.statusCode.value
-                    }
+                        value: actualValue.statusCode.value,
+                    },
                 };
                 this.updateTimer = setTimeout(() => {
                     this.updateTimer = null;
@@ -199,7 +195,7 @@ class Browser extends Component {
         // Note we need to store prevPropsList and prevFilterText to detect changes.
         if (props.subscribes !== state.subscribes) {
             const mapping = {};
-            Object.keys(props.subscribes).forEach(nodeId => mapping[props.subscribes[nodeId].id] = nodeId);
+            Object.keys(props.subscribes).forEach(nodeId => (mapping[props.subscribes[nodeId].id] = nodeId));
             return { subscribes: props.subscribes, updating: false, mapping, changing: [] };
         }
         if (props.updating !== state.updating) {
@@ -209,12 +205,12 @@ class Browser extends Component {
     }
 
     showError(text) {
-        this.setState({errorText: text});
+        this.setState({ errorText: text });
     }
 
     updateRectState(requesting, cb) {
         requesting = JSON.stringify(requesting);
-        if (!this.state.refreshing ||  requesting !== JSON.stringify(this.state.requesting)) {
+        if (!this.state.refreshing || requesting !== JSON.stringify(this.state.requesting)) {
             this.setState({ requesting: JSON.parse(requesting), refreshing: true }, () => cb && cb());
         } else {
             cb && cb();
@@ -229,15 +225,23 @@ class Browser extends Component {
 
             setTimeout(() => {
                 this.updateRectState(this.requesting, () =>
-                    this.props.socket.sendTo(`${this.props.adapterName}.${this.props.instance}`, 'browse', node.id)
+                    this.props.socket
+                        .sendTo(`${this.props.adapterName}.${this.props.instance}`, 'browse', node.id)
                         .then(data => {
                             this.requesting[node.id] && delete this.requesting[node.id];
 
                             const _root = JSON.parse(JSON.stringify(root));
                             if (data.error) {
-                                this.setState({requesting: JSON.parse(JSON.stringify(this.requesting)), errorDetected: true, requestItems: false}, () => this.showError(I18n.t(data.error.toString())));
+                                this.setState(
+                                    {
+                                        requesting: JSON.parse(JSON.stringify(this.requesting)),
+                                        errorDetected: true,
+                                        requestItems: false,
+                                    },
+                                    () => this.showError(I18n.t(data.error.toString())),
+                                );
                             } else {
-                                const list = (data.list || []);
+                                const list = data.list || [];
                                 list.forEach(item => {
                                     item.fullPath = [node.fullPath, item.id].join('>>');
                                     if (item.type === 'folder') {
@@ -249,15 +253,19 @@ class Browser extends Component {
                                 _node.list = list;
 
                                 const requestItems = this.state.requestItems;
-                                const newState = {requesting: JSON.parse(JSON.stringify(this.requesting)), root: _root, errorDetected: false};
+                                const newState = {
+                                    requesting: JSON.parse(JSON.stringify(this.requesting)),
+                                    root: _root,
+                                    errorDetected: false,
+                                };
                                 if (requestItems) {
                                     newState.requestItems = false;
                                 }
 
-                                this.setState(newState, () =>
-                                    requestItems && this.showAllSelectedStates());
+                                this.setState(newState, () => requestItems && this.showAllSelectedStates());
                             }
-                        }))
+                        }),
+                );
             }, 100);
         }
     }
@@ -267,7 +275,8 @@ class Browser extends Component {
             if (this.state['val_' + node.id] === undefined) {
                 const newState = {};
                 newState['val_' + node.id] = null;
-                this.props.socket.sendTo(`${this.props.adapterName}.${this.props.instance}`, 'read', node.id)
+                this.props.socket
+                    .sendTo(`${this.props.adapterName}.${this.props.instance}`, 'read', node.id)
                     .then(data => {
                         const newState = {};
                         newState[`val_${node.id}`] = data;
@@ -318,39 +327,83 @@ class Browser extends Component {
             style.color = '#3399CC';
         }
         const checked = !!(node.list && hasSomeSubscribes);
-        const indeterminate = checked && (!node.list || !node.list.filter(item => item.native && item.native.nodeClass === 'Variable').every(item =>
-            renderContext.cachedFullPathes.includes(`${item.fullPath}>>`)));
+        const indeterminate =
+            checked &&
+            (!node.list ||
+                !node.list
+                    .filter(item => item.native && item.native.nodeClass === 'Variable')
+                    .every(item => renderContext.cachedFullPathes.includes(`${item.fullPath}>>`)));
 
-        return <Box
-            key={node.fullPath}
-            sx={styles.folderDiv}
-            style={style}
-            onClick={() => node.id && this.toggleFolder(node)}
-        >
-            {node.list && node.list.length ? (<Checkbox style={styles.itemCheckbox} indeterminate={indeterminate} checked={checked} size="small" onClick={e => {
-                e.stopPropagation();
-                if (indeterminate) {
-                    // disable all
-                    this.onSelectUnselectVariable(node.list.filter(item => item.native && item.native.nodeClass === 'Variable' && this.state.subscribes[item.id]), false);
-                } else {
-                    // enable all
-                    if (checked) {
-                        this.onSelectUnselectVariable(node.list.filter(item => item.native && item.native.nodeClass === 'Variable' && this.state.subscribes[item.id]), false);
-                    } else {
-                        this.onSelectUnselectVariable(node.list.filter(item => item.native && item.native.nodeClass === 'Variable' && !this.state.subscribes[item.id]), true);
-                    }
-                }
-            }}/>) : null}
-            {!node.fullPath || this.state.expanded.includes(node.fullPath) ? (<IconFolderOpened style={styles.folderIcon}/>) : (<IconFolderClosed style={styles.folderIcon}/>)}
-            {node.name}
-            {this.state.requesting[node.id] ? <CircularProgress
-                variant="indeterminate"
-                disableShrink
-                style={styles.folderWait}
-                size={18}
-                thickness={4}
-            /> : null}
-        </Box>;
+        return (
+            <Box
+                key={node.fullPath}
+                sx={styles.folderDiv}
+                style={style}
+                onClick={() => node.id && this.toggleFolder(node)}
+            >
+                {node.list && node.list.length ? (
+                    <Checkbox
+                        style={styles.itemCheckbox}
+                        indeterminate={indeterminate}
+                        checked={checked}
+                        size="small"
+                        onClick={e => {
+                            e.stopPropagation();
+                            if (indeterminate) {
+                                // disable all
+                                this.onSelectUnselectVariable(
+                                    node.list.filter(
+                                        item =>
+                                            item.native &&
+                                            item.native.nodeClass === 'Variable' &&
+                                            this.state.subscribes[item.id],
+                                    ),
+                                    false,
+                                );
+                            } else {
+                                // enable all
+                                if (checked) {
+                                    this.onSelectUnselectVariable(
+                                        node.list.filter(
+                                            item =>
+                                                item.native &&
+                                                item.native.nodeClass === 'Variable' &&
+                                                this.state.subscribes[item.id],
+                                        ),
+                                        false,
+                                    );
+                                } else {
+                                    this.onSelectUnselectVariable(
+                                        node.list.filter(
+                                            item =>
+                                                item.native &&
+                                                item.native.nodeClass === 'Variable' &&
+                                                !this.state.subscribes[item.id],
+                                        ),
+                                        true,
+                                    );
+                                }
+                            }
+                        }}
+                    />
+                ) : null}
+                {!node.fullPath || this.state.expanded.includes(node.fullPath) ? (
+                    <IconFolderOpened style={styles.folderIcon} />
+                ) : (
+                    <IconFolderClosed style={styles.folderIcon} />
+                )}
+                {node.name}
+                {this.state.requesting[node.id] ? (
+                    <CircularProgress
+                        variant="indeterminate"
+                        disableShrink
+                        style={styles.folderWait}
+                        size={18}
+                        thickness={4}
+                    />
+                ) : null}
+            </Box>
+        );
     }
 
     getIobName(fullPath, _names, _root) {
@@ -359,7 +412,7 @@ class Browser extends Component {
             _names = [];
             _root = this.state.root;
             if (!fullPath[0]) {
-                fullPath.shift()
+                fullPath.shift();
             }
         }
 
@@ -386,12 +439,15 @@ class Browser extends Component {
         if (!this.state.changing.includes(node.id)) {
             const changing = this.state.changing.splice();
             changing.push(node.id);
-            this.setState({changing}, () =>
+            this.setState({ changing }, () =>
                 this.props.onSubscribeChanged(node, enabled, () =>
-                    setTimeout(() => this.onSelectUnselectVariable(nodes, enabled))));
+                    setTimeout(() => this.onSelectUnselectVariable(nodes, enabled)),
+                ),
+            );
         } else {
             this.props.onSubscribeChanged(node, enabled, () =>
-                setTimeout(() => this.onSelectUnselectVariable(nodes, enabled)));
+                setTimeout(() => this.onSelectUnselectVariable(nodes, enabled)),
+            );
         }
     }
 
@@ -407,7 +463,7 @@ class Browser extends Component {
             val = 'null';
         }
 
-        val  = typeof val  !== 'string' ? (typeof val === 'object' ? JSON.stringify(val): val.toString()) : val;
+        val = typeof val !== 'string' ? (typeof val === 'object' ? JSON.stringify(val) : val.toString()) : val;
         type = typeof type !== 'string' ? JSON.stringify(type) : type;
 
         if (val.length > 256) {
@@ -416,35 +472,50 @@ class Browser extends Component {
         if (type.length > 256) {
             type = `${type.substring(0, 256)}...`;
         }
-        return <Box
-            key={node.fullPath}
-            sx={styles.itemDiv}
-            style={style}
-        >
-            {this.state.changing.includes(node.id) ? <CircularProgress
-                    variant="indeterminate"
-                    disableShrink
-                    style={styles.folderWait}
-                    size={22}
-                    thickness={4}
-                /> :
-                <Checkbox
-                    style={styles.itemCheckbox}
-                    checked={!!this.state.subscribes[node.id]}
-                    size="small"
-                    onClick={() => this.onSelectUnselectVariable([node])}
-                />}
-            <div
-                style={{
-                    ...styles.itemName,
-                    width: `calc(100% - ${WIDTH_NAME + 22}px)`
-                }}
+        return (
+            <Box
+                key={node.fullPath}
+                sx={styles.itemDiv}
+                style={style}
             >
-                {typeof node.name !== 'string' ? JSON.stringify(node.name) : node.name}
-            </div>
-            <div style={styles.itemType} title={type.length > 10 ? type : ''}>{type}</div>
-            <div style={styles.itemVal}  title={val.length  > 10 ? val  : ''}>{val}</div>
-        </Box>;
+                {this.state.changing.includes(node.id) ? (
+                    <CircularProgress
+                        variant="indeterminate"
+                        disableShrink
+                        style={styles.folderWait}
+                        size={22}
+                        thickness={4}
+                    />
+                ) : (
+                    <Checkbox
+                        style={styles.itemCheckbox}
+                        checked={!!this.state.subscribes[node.id]}
+                        size="small"
+                        onClick={() => this.onSelectUnselectVariable([node])}
+                    />
+                )}
+                <div
+                    style={{
+                        ...styles.itemName,
+                        width: `calc(100% - ${WIDTH_NAME + 22}px)`,
+                    }}
+                >
+                    {typeof node.name !== 'string' ? JSON.stringify(node.name) : node.name}
+                </div>
+                <div
+                    style={styles.itemType}
+                    title={type.length > 10 ? type : ''}
+                >
+                    {type}
+                </div>
+                <div
+                    style={styles.itemVal}
+                    title={val.length > 10 ? val : ''}
+                >
+                    {val}
+                </div>
+            </Box>
+        );
     }
 
     renderUnsupported(node, level) {
@@ -452,27 +523,33 @@ class Browser extends Component {
             paddingLeft: level * 20,
             width: `calc(100% - ${level * 20}px)`,
         };
-        return <div
-            key={node.fullPath}
-            style={{
-                ...styles.itemDiv,
-                ...styles.itemUnsupported,
-                ...style,
-            }}
-        >
-            <div style={{ width: 24, display: 'inline-block' }}>&nbsp;</div>
-            {node.name}
-        </div>;
+        return (
+            <div
+                key={node.fullPath}
+                style={{
+                    ...styles.itemDiv,
+                    ...styles.itemUnsupported,
+                    ...style,
+                }}
+            >
+                <div style={{ width: 24, display: 'inline-block' }}>&nbsp;</div>
+                {node.name}
+            </div>
+        );
     }
 
     renderItem(node, level, renderContext) {
         node = node || this.state.root;
         level = level || 0;
-        const style = {paddingLeft: level * 20, width: `calc(100% - ${level * 20}px)`};
+        const style = { paddingLeft: level * 20, width: `calc(100% - ${level * 20}px)` };
 
         if (node.list !== undefined) {
             if (!this.requesting[node.id]) {
-                if (!node.list && (!node.id || this.state.expanded.includes(node.fullPath)) && !this.state.errorDetected) {
+                if (
+                    !node.list &&
+                    (!node.id || this.state.expanded.includes(node.fullPath)) &&
+                    !this.state.errorDetected
+                ) {
                     this.refreshFinishTimeout && clearTimeout(this.refreshFinishTimeout);
                     this.refreshFinishTimeout = null;
                     // read the list
@@ -490,7 +567,9 @@ class Browser extends Component {
             }
             return [
                 this.renderFolder(node, level, renderContext),
-                (!node.id || this.state.expanded.includes(node.fullPath)) && node.list ? node.list.map(item => this.renderItem(item, level + 1, renderContext)) : null
+                (!node.id || this.state.expanded.includes(node.fullPath)) && node.list
+                    ? node.list.map(item => this.renderItem(item, level + 1, renderContext))
+                    : null,
             ];
         }
         if (node.native && node.native.nodeClass === 'Variable') {
@@ -501,33 +580,53 @@ class Browser extends Component {
     }
 
     onRefresh() {
-        this.setState({ root: { list: null, id: '', name: 'Root', fullPath: '' }, refreshing: true, errorDetected: false });
+        this.setState({
+            root: { list: null, id: '', name: 'Root', fullPath: '' },
+            refreshing: true,
+            errorDetected: false,
+        });
     }
 
     render() {
         const renderContext = {
-            cachedFullPathes: Object.keys(this.state.subscribes).map(item => `${this.state.subscribes[item].fullPath}>>`),
+            cachedFullPathes: Object.keys(this.state.subscribes).map(
+                item => `${this.state.subscribes[item].fullPath}>>`,
+            ),
         };
 
-        return <div style={styles.tab}>
-            <Fab
-                style={styles.refresh}
-                disabled={this.state.refreshing || !!Object.keys(this.state.requesting).length}
-                onClick={() => this.onRefresh()}
-                size="small"
-            >
-                <IconRefresh/>
-            </Fab>
-            <div key="header" style={{ ...styles.header, width: '100%' }}>
-                <div style={{ ...styles.itemName, paddingLeft: 3, width: `calc(100% - ${WIDTH_NAME + 11}px)`, borderRight: '1px solid white' }}>{I18n.t('Path')}</div>
-                <div style={{ ...styles.itemType, paddingLeft: 3 }}>{I18n.t('Type')}</div>
-                <div style={{ ...styles.itemVal, paddingRight: 3, borderLeft: '1px solid white' }}>{I18n.t('Value')}</div>
+        return (
+            <div style={styles.tab}>
+                <Fab
+                    style={styles.refresh}
+                    disabled={this.state.refreshing || !!Object.keys(this.state.requesting).length}
+                    onClick={() => this.onRefresh()}
+                    size="small"
+                >
+                    <IconRefresh />
+                </Fab>
+                <div
+                    key="header"
+                    style={{ ...styles.header, width: '100%' }}
+                >
+                    <div
+                        style={{
+                            ...styles.itemName,
+                            paddingLeft: 3,
+                            width: `calc(100% - ${WIDTH_NAME + 11}px)`,
+                            borderRight: '1px solid white',
+                        }}
+                    >
+                        {I18n.t('Path')}
+                    </div>
+                    <div style={{ ...styles.itemType, paddingLeft: 3 }}>{I18n.t('Type')}</div>
+                    <div style={{ ...styles.itemVal, paddingRight: 3, borderLeft: '1px solid white' }}>
+                        {I18n.t('Value')}
+                    </div>
+                </div>
+                <Box sx={styles.tree}>{this.renderItem(null, null, renderContext)}</Box>
+                {this.renderError()}
             </div>
-            <Box sx={styles.tree}>
-                {this.renderItem(null, null, renderContext)}
-            </Box>
-            {this.renderError()}
-        </div>;
+        );
     }
 }
 

@@ -8,7 +8,7 @@ import { Message as MessageDialog } from '@iobroker/adapter-react-v5';
 const styles = {
     tab: {
         width: '100%',
-        height: '100%'
+        height: '100%',
     },
 };
 
@@ -23,7 +23,12 @@ class Server extends Component {
 
     renderMessage() {
         if (this.state.message) {
-            return (<MessageDialog text={this.state.message} onClose={() => this.setState({ message: '' })}/>);
+            return (
+                <MessageDialog
+                    text={this.state.message}
+                    onClose={() => this.setState({ message: '' })}
+                />
+            );
         } else {
             return null;
         }
@@ -33,9 +38,7 @@ class Server extends Component {
         if (this.state.loading) {
             return <CircularProgress />;
         }
-        return <div style={styles.tab}>
-            {this.renderMessage()}
-        </div>;
+        return <div style={styles.tab}>{this.renderMessage()}</div>;
     }
 }
 

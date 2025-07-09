@@ -1,20 +1,28 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-
-import './index.css';
-import App from './App';
+import pack from '../package.json';
 import * as serviceWorker from './serviceWorker';
-import pkg from '../package.json';
+
+import '@iobroker/adapter-react-v5/index.css';
+import App from './App';
+
+declare global {
+    interface Window {
+        sentryDSN: string;
+        adapterName: string | undefined;
+    }
+}
 
 window.adapterName = 'opcua';
 window.sentryDSN = 'https://504499a725eb4898930d3b9e9da95740@sentry.iobroker.net/56';
 
-console.log(`iobroker.${window.adapterName}@${pkg.version}`);
+console.log(`iobroker.${window.adapterName}@${pack.version}`);
 
 const container = document.getElementById('root');
-const root = createRoot(container);
-
-root.render(<App />);
+if (container) {
+    const root = createRoot(container);
+    root.render(<App />);
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
