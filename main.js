@@ -11,7 +11,6 @@
 
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const fs = require('node:fs');
-const adapterName = require('./package.json').name.split('.').pop();
 
 let server = null;
 let client = null;
@@ -28,7 +27,7 @@ let adapter;
 
 function startAdapter(options) {
     options ||= {};
-    options = Object.assign({}, options, { name: adapterName });
+    options = Object.assign({}, options, { name: 'opcua' });
 
     adapter = new utils.Adapter(options);
 
@@ -88,9 +87,9 @@ function startAdapter(options) {
                         states[id].type = type;
                     }
                     // If SERVER
-                    server && server.onStateChange(id);
+                    server?.onStateChange(id);
                     // if CLIENT
-                    client && client.onStateChange(id);
+                    client?.onStateChange(id);
                     return;
                 }
             }
@@ -109,17 +108,17 @@ function startAdapter(options) {
                 // If value really changed
                 if (!adapter.config.onchange || oldVal !== state.val || oldAck !== state.ack) {
                     // If SERVER
-                    server && server.onStateChange(id, state);
+                    server?.onStateChange(id, state);
                     // if CLIENT
-                    client && client.onStateChange(id, state);
+                    client?.onStateChange(id, state);
                 }
             }
         }
     });
 
     adapter.on('objectChange', (id, obj) => {
-        client && client.onObjectChange(id, obj);
-        server && server.onObjectChange && server.onObjectChange(id, obj);
+        client?.onObjectChange(id, obj);
+        server?.onObjectChange?.(id, obj);
     });
 
     return adapter;
@@ -142,7 +141,7 @@ function getCertificates(type, publicCert, privateCert) {
 }
 
 function processMessage(adapter, obj) {
-    if (!obj || !obj.command) {
+    if (!obj?.command) {
         return;
     }
 
@@ -229,7 +228,9 @@ function processMessage(adapter, obj) {
                     client
                         .browse(obj.message)
                         .then(list => {
-                            DEBUG && console.log(JSON.stringify(list, null, 2));
+                            if (DEBUG) {
+                                console.log(JSON.stringify(list, null, 2));
+                            }
                             // make list compatible with a file system
                             list = list.map(item => {
                                 const newItem = {
@@ -261,7 +262,9 @@ function processMessage(adapter, obj) {
                     client
                         .read(obj.message)
                         .then(value => {
-                            DEBUG && console.log(JSON.stringify(value, null, 2));
+                            if (DEBUG) {
+                                console.log(JSON.stringify(value, null, 2));
+                            }
                             adapter.sendTo(obj.from, obj.command, value, obj.callback);
                         })
                         .catch(error => adapter.sendTo(obj.from, obj.command, { error }, obj.callback));
@@ -295,7 +298,9 @@ function processMessage(adapter, obj) {
                         .addState(obj.message)
                         .then(() => client.getSubscribes())
                         .then(list => {
-                            DEBUG && console.log(JSON.stringify(list, null, 2));
+                            if (DEBUG) {
+                                console.log(JSON.stringify(list, null, 2));
+                            }
                             obj.callback && adapter.sendTo(obj.from, obj.command, list, obj.callback);
                         })
                         .catch(error => obj.callback && adapter.sendTo(obj.from, obj.command, { error }, obj.callback));
@@ -378,14 +383,14 @@ function startOpc(adapter) {
 }
 
 function readStatesForPattern(tasks, callback) {
-    if (!tasks || !tasks.length) {
-        callback && callback();
+    if (!tasks?.length) {
+        callback?.();
     } else {
         const pattern = tasks.pop();
 
         adapter.getForeignStates(pattern, function (err, res) {
             if (!err && res) {
-                states = states || {};
+                states ||= {};
 
                 let count = 0;
                 for (const id in res) {
@@ -399,8 +404,7 @@ function readStatesForPattern(tasks, callback) {
                         if (
                             !messageboxRegex.test(id) &&
                             !id.match(/^system\./) &&
-                            objs[id] &&
-                            objs[id].common &&
+                            objs[id]?.common &&
                             objs[id].type === 'state'
                         ) {
                             objects[id] = objs[id];
