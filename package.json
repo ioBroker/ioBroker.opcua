@@ -1,7 +1,7 @@
 {
   "name": "iobroker.opcua",
   "description": "The adapter allows to use OPC-UA server and client in ioBroker.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "bluefox <dogafox@gmail.com>",
   "homepage": "https://github.com/ioBroker/ioBroker.opcua",
   "repository": {

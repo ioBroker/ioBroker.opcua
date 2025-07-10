@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "opcua",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "news": {
+      "1.2.1": {
+        "en": "GUI was migrated vite\nBackend was changed for new js-controller",
+        "de": "GUI wurde migriert vite\nBackend wurde für den neuen js-controller geändert",
+        "ru": "ГУИ мигрировал Vite\nBackend изменили на новый js-контроллер",
+        "pt": "GUI foi migrada vite\nA infra- estrutura foi alterada para o novo controlador js",
+        "nl": "GUI is gemigreerd vite\nBackend is gewijzigd voor nieuwe js-controller",
+        "fr": "GUI a été migré\nLe moteur a été modifié pour le nouveau contrôleur js",
+        "it": "GUI è stata migrata vite\nBackend è stato cambiato per il nuovo js-controller",
+        "es": "GUI was migrated vite\nBackend fue cambiado para nuevo js-controller",
+        "pl": "GUI został przeniesiony Vite\nBackend został zmieniony dla nowego sterownika js-",
+        "uk": "Графічний інтерфейс\nЗакінчення було змінено для нових js-controller",
+        "zh-cn": "GUI 已迁移 vite\n为新的 js 控制器修改了后端"
+      },
       "1.1.0": {
         "en": "GUI was migrated to a non-style framework",
         "de": "GUI wurde zu einem untypischen Rahmen migriert",
