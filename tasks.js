@@ -15,7 +15,7 @@ async function copyAllFiles() {
     copyFiles(['src/build/**/*', '!src/build/index.html', 'admin-config/*'], 'admin/');
 
     await patchHtmlFile(`${__dirname}/src/build/index.html`);
-    copyFileSync(`${__dirname}/src/build/index.html`, `${__dirname}/admin/index_m.html`);
+    copyFileSync(`${__dirname}/src/build/index.html`, `${__dirname}/admin/index.html`);
 }
 
 function clean() {
