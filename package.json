@@ -12,7 +12,7 @@
     "node": ">=18"
   },
   "keywords": [
-    "iobroker",
+    "ioBroker",
     "OPC",
     "OPC UA"
   ],
