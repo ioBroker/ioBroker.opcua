@@ -9,7 +9,7 @@
     "url": "https://github.com/ioBroker/ioBroker.opcua"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "keywords": [
     "iobroker",
