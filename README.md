@@ -59,6 +59,8 @@ The following data types are supported:
 ### 0.0.1 (2016-05-13)
 * (bluefox) support of server (actual no authentication)
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 The MIT License (MIT)
 
