@@ -21,6 +21,10 @@ The following data types are supported:
 	### **WORK IN PROGRESS**
 -->
 ## Changelog
+
+### **WORK IN PROGRESS**
+- (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
+
 ### 1.2.1 (2025-07-10)
 * (bluefox) GUI was migrated vite
 * (bluefox) Backend was changed for new js-controller
