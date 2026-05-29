@@ -136,7 +136,6 @@
     "connectionType": "local",
     "dataSource": "poll",
     "compact": true,
-    "materialize": false,
     "icon": "opcua.png",
     "keywords": [
       "OPC",
