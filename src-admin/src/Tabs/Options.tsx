@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 import {
     Select,
@@ -17,35 +16,13 @@ import {
 
 import { MdFlashOn as IconConnect, MdClose as IconClose } from 'react-icons/md';
 
-import { I18n, Logo, Message as DialogMessage, Error as DialogError } from '@iobroker/adapter-react-v5';
+import { I18n, Logo, Message as DialogMessage, Error as DialogError } from '@iobroker/gui-components';
 
-const styles = {
-    tab: {
-        width: '100%',
-        minHeight: '100%',
-    },
+import type { OptionsProps } from '../types';
+
+const styles: Record<string, React.CSSProperties> = {
     input: {
         minWidth: 300,
-    },
-    button: {
-        marginRight: 20,
-    },
-    card: {
-        maxWidth: 345,
-        textAlign: 'center',
-    },
-    media: {
-        height: 180,
-    },
-    column: {
-        marginRight: 20,
-    },
-    columnLogo: {
-        width: 350,
-        marginRight: 0,
-    },
-    columnSettings: {
-        width: 'calc(100% - 370px)',
     },
     serverURL: {
         width: '30%',
@@ -77,13 +54,28 @@ const styles = {
         marginRight: 20,
         marginBottom: 24,
     },
-    checkBoxLabel: theme => ({
-        color: theme.palette.mode === 'dark' ? '#EEE' : '#111',
-    }),
 };
 
-class Options extends Component {
-    constructor(props) {
+interface Certificate {
+    name: string;
+    type: 'public' | 'private' | 'chained';
+}
+
+interface OptionsState {
+    showHint: boolean;
+    toast: string;
+    isInstanceAlive: boolean;
+    certificates: Certificate[] | null;
+    requesting: boolean;
+    passwordRepeat: string;
+    errorText: string;
+    messageText: string;
+}
+
+export default class Options extends Component<OptionsProps, OptionsState> {
+    private readonly textPasswordMismatch: string;
+
+    constructor(props: OptionsProps) {
         super(props);
 
         this.state = {
@@ -93,12 +85,14 @@ class Options extends Component {
             certificates: null,
             requesting: false,
             passwordRepeat: this.props.native.basicUserPassword,
+            errorText: '',
+            messageText: '',
         };
 
         this.textPasswordMismatch = I18n.t('Password repeat mismatch');
     }
 
-    async componentDidMount() {
+    async componentDidMount(): Promise<void> {
         const obj = await this.props.socket.getObject(
             `system.adapter.${this.props.adapterName}.${this.props.instance}`,
         );
@@ -106,14 +100,14 @@ class Options extends Component {
             `system.adapter.${this.props.adapterName}.${this.props.instance}.alive`,
         );
         const certificates = await this.props.socket.getCertificates();
-        this.setState({ certificates, isInstanceAlive: obj && obj.common && obj.common.enabled && state && state.val });
+        this.setState({ certificates, isInstanceAlive: !!(obj?.common?.enabled && state?.val) });
     }
 
-    showError(text) {
+    showError(text: string): void {
         this.setState({ errorText: text });
     }
 
-    renderError() {
+    renderError(): React.JSX.Element | null {
         if (!this.state.errorText) {
             return null;
         }
@@ -126,7 +120,7 @@ class Options extends Component {
         );
     }
 
-    renderToast() {
+    renderToast(): React.JSX.Element | null {
         if (!this.state.toast) {
             return null;
         }
@@ -139,39 +133,34 @@ class Options extends Component {
                 open={true}
                 autoHideDuration={6000}
                 onClose={() => this.setState({ toast: '' })}
-                ContentProps={{
-                    'aria-describedby': 'message-id',
-                }}
                 message={<span id="message-id">{this.state.toast}</span>}
-                action={[
+                action={
                     <IconButton
                         key="close"
                         aria-label="Close"
                         color="inherit"
-                        style={styles.close}
                         onClick={() => this.setState({ toast: '' })}
                     >
                         <IconClose />
-                    </IconButton>,
-                ]}
+                    </IconButton>
+                }
             />
         );
     }
 
-    renderHint() {
-        if (this.state.showHint) {
-            return (
-                <DialogMessage
-                    text={I18n.t('Click now Get new connection certificates to request new temporary password')}
-                    onClose={() => this.setState({ showHint: false })}
-                />
-            );
-        } else {
+    renderHint(): React.JSX.Element | null {
+        if (!this.state.showHint) {
             return null;
         }
+        return (
+            <DialogMessage
+                text={I18n.t('Click now Get new connection certificates to request new temporary password')}
+                onClose={() => this.setState({ showHint: false })}
+            />
+        );
     }
 
-    renderCert(type) {
+    renderCert(type: 'public' | 'private'): React.JSX.Element {
         return (
             <FormControl
                 style={styles.certSelector}
@@ -182,7 +171,7 @@ class Options extends Component {
                 </InputLabel>
                 <Select
                     variant="standard"
-                    value={type === 'public' ? this.props.native.certPublic : this.props.native.certPrivate}
+                    value={(type === 'public' ? this.props.native.certPublic : this.props.native.certPrivate) || ''}
                     onChange={e =>
                         this.props.onChange(type === 'public' ? 'certPublic' : 'certPrivate', e.target.value)
                     }
@@ -191,73 +180,82 @@ class Options extends Component {
                     {this.state.certificates
                         ? this.state.certificates
                               .filter(cert => cert.type === type)
-                              .map(cert => <MenuItem value={cert.name}>{cert.name}</MenuItem>)
+                              .map(cert => (
+                                  <MenuItem
+                                      key={cert.name}
+                                      value={cert.name}
+                                  >
+                                      {cert.name}
+                                  </MenuItem>
+                              ))
                         : null}
                 </Select>
             </FormControl>
         );
     }
 
-    renderClientSettings() {
-        if (this.props.native.type === 'client') {
-            return (
-                <>
-                    <TextField
-                        variant="standard"
-                        disabled={this.state.requesting}
-                        key="clientEndpointUrl"
-                        style={styles.serverURL}
-                        label={I18n.t('OPC UA Server URL')}
-                        value={this.props.native.clientEndpointUrl}
-                        onChange={e => this.props.onChange('clientEndpointUrl', e.target.value)}
-                    />
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        style={{ width: 250 }}
-                        disabled={
-                            this.state.requesting ||
-                            !this.state.isInstanceAlive ||
-                            this.props.native.basicUserPassword !== this.state.passwordRepeat
-                        }
-                        onClick={() => this.checkConnection()}
-                    >
-                        {this.state.requesting ? (
-                            <CircularProgress
-                                size={18}
-                                thickness={4}
-                                variant="indeterminate"
-                                disableShrink
-                            />
-                        ) : (
-                            <IconConnect />
-                        )}
-                        {I18n.t('Test connection')}
-                    </Button>
-                </>
-            );
+    renderClientSettings(): React.JSX.Element | null {
+        if (this.props.native.type !== 'client') {
+            return null;
         }
 
-        return null;
-    }
-
-    renderServerSettings() {
-        if (this.props.native.type === 'server') {
-            return (
+        return (
+            <>
                 <TextField
                     variant="standard"
                     disabled={this.state.requesting}
-                    style={styles.patterns}
-                    label={I18n.t('Mask for states')}
-                    value={this.props.native.patterns}
-                    onChange={e => this.props.onChange('patterns', e.target.value)}
-                    helperText={I18n.t('e.g. "javascript.0.*, hm-rpc.0.*" (divided by comma)')}
+                    key="clientEndpointUrl"
+                    style={styles.serverURL}
+                    label={I18n.t('OPC UA Server URL')}
+                    value={this.props.native.clientEndpointUrl}
+                    onChange={e => this.props.onChange('clientEndpointUrl', e.target.value)}
                 />
-            );
-        }
+                <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ width: 250 }}
+                    disabled={
+                        this.state.requesting ||
+                        !this.state.isInstanceAlive ||
+                        this.props.native.basicUserPassword !== this.state.passwordRepeat
+                    }
+                    onClick={() => this.checkConnection()}
+                >
+                    {this.state.requesting ? (
+                        <CircularProgress
+                            size={18}
+                            thickness={4}
+                            variant="indeterminate"
+                            disableShrink
+                        />
+                    ) : (
+                        <IconConnect />
+                    )}
+                    {I18n.t('Test connection')}
+                </Button>
+            </>
+        );
     }
 
-    renderAuthType() {
+    renderServerSettings(): React.JSX.Element | null {
+        if (this.props.native.type !== 'server') {
+            return null;
+        }
+
+        return (
+            <TextField
+                variant="standard"
+                disabled={this.state.requesting}
+                style={styles.patterns}
+                label={I18n.t('Mask for states')}
+                value={this.props.native.patterns}
+                onChange={e => this.props.onChange('patterns', e.target.value)}
+                helperText={I18n.t('e.g. "javascript.0.*, hm-rpc.0.*" (divided by comma)')}
+            />
+        );
+    }
+
+    renderAuthType(): React.JSX.Element {
         return (
             <FormControl
                 style={{ width: 150 }}
@@ -279,7 +277,7 @@ class Options extends Component {
         );
     }
 
-    renderSecurityPolicy() {
+    renderSecurityPolicy(): React.JSX.Element {
         return (
             <FormControl
                 style={styles.certSecurityPolicy}
@@ -309,7 +307,7 @@ class Options extends Component {
         );
     }
 
-    renderSecurityMode() {
+    renderSecurityMode(): React.JSX.Element {
         return (
             <FormControl
                 style={styles.certSecurityMode}
@@ -331,7 +329,7 @@ class Options extends Component {
         );
     }
 
-    renderBasicAuth() {
+    renderBasicAuth(): React.JSX.Element {
         return (
             <>
                 <TextField
@@ -354,8 +352,11 @@ class Options extends Component {
                     onChange={e => {
                         const value = e.target.value;
                         this.props.onChange('basicUserPassword', value, () =>
-                            this.props.onConfigError(
-                                value !== this.state.passwordRepeat ? this.textPasswordMismatch : '',
+                            // the password is entered anew, so it is stored encrypted from now on
+                            this.props.onChange('passwordMigrated', true, () =>
+                                this.props.onConfigError(
+                                    value !== this.state.passwordRepeat ? this.textPasswordMismatch : '',
+                                ),
                             ),
                         );
                     }}
@@ -387,35 +388,39 @@ class Options extends Component {
         );
     }
 
-    renderMessage() {
+    renderMessage(): React.JSX.Element | null {
         if (!this.state.messageText) {
             return null;
         }
         return (
             <DialogMessage
                 title={I18n.t('Success')}
+                text={this.state.messageText}
                 onClose={() => this.setState({ messageText: '' })}
-            >
-                {this.state.messageText}
-            </DialogMessage>
+            />
         );
     }
 
-    checkConnection() {
+    checkConnection(): void {
         this.setState({ requesting: true }, () =>
             this.props.socket
-                .sendTo(`${this.props.adapterName}.${this.props.instance}`, 'test', this.props.native)
+                .sendTo<{ error?: string; result?: string }>(
+                    `${this.props.adapterName}.${this.props.instance}`,
+                    'test',
+                    this.props.native,
+                )
                 .then(data => {
                     if (data.error) {
-                        this.setState({ requesting: false }, () => this.showError(I18n.t(data.error)));
+                        this.setState({ requesting: false }, () => this.showError(I18n.t(data.error!)));
                     } else {
-                        this.setState({ messageText: data.result, requesting: false });
+                        this.setState({ messageText: data.result || '', requesting: false });
                     }
-                }),
+                })
+                .catch(e => this.setState({ requesting: false }, () => this.showError(e.toString()))),
         );
     }
 
-    render() {
+    render(): React.JSX.Element {
         return (
             <div
                 style={{
@@ -444,8 +449,9 @@ class Options extends Component {
                         disabled={this.state.requesting}
                         value={this.props.native.type || 'client'}
                         onChange={e => {
-                            this.props.onChange('type', e.target.value, () =>
-                                this.props.onChange('sendAckToo', e.target.value === 'server'),
+                            const value = e.target.value;
+                            this.props.onChange('type', value, () =>
+                                this.props.onChange('sendAckToo', value === 'server'),
                             );
                         }}
                     >
@@ -462,7 +468,7 @@ class Options extends Component {
                     : null}
                 {this.props.native.authType === 'basic' ? this.renderBasicAuth() : null}
                 <FormControlLabel
-                    sx={{ '& .MuiFormControlLabel-label': styles.checkBoxLabel }}
+                    sx={{ '& .MuiFormControlLabel-label': { color: 'text.primary' } }}
                     control={
                         <Checkbox
                             checked={!!this.props.native.sendAckToo}
@@ -472,7 +478,7 @@ class Options extends Component {
                     label={I18n.t('Write values on update too (not only with ack=false)')}
                 />
                 <FormControlLabel
-                    sx={{ '& .MuiFormControlLabel-label': styles.checkBoxLabel }}
+                    sx={{ '& .MuiFormControlLabel-label': { color: 'text.primary' } }}
                     control={
                         <Checkbox
                             checked={!!this.props.native.onchange}
@@ -491,17 +497,3 @@ class Options extends Component {
         );
     }
 }
-
-Options.propTypes = {
-    common: PropTypes.object.isRequired,
-    native: PropTypes.object.isRequired,
-    instance: PropTypes.number.isRequired,
-    adapterName: PropTypes.string.isRequired,
-    onError: PropTypes.func,
-    onConfigError: PropTypes.func,
-    onLoad: PropTypes.func,
-    onChange: PropTypes.func,
-    socket: PropTypes.object.isRequired,
-};
-
-export default Options;

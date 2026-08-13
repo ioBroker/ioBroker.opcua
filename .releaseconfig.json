@@ -1,6 +1,7 @@
 {
   "plugins": ["iobroker", "license"],
   "exec": {
+    "beforeCheck": "npm run build",
     "beforePush": "npm run build"
   }
 }

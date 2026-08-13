@@ -21,6 +21,18 @@ export default [
         },
     },
     {
+        // the vite configuration is not part of the sources, it has its own tsconfig
+        files: ['vite.config.ts'],
+        languageOptions: {
+            parserOptions: {
+                projectService: false,
+                project: ['./tsconfig.node.json'],
+                tsconfigRootDir: import.meta.dirname,
+            },
+        },
+    },
+
+    {
         // disable temporary the rule 'jsdoc/require-param' and enable 'jsdoc/require-jsdoc'
         rules: {
             'jsdoc/require-jsdoc': 'off',
@@ -29,6 +41,6 @@ export default [
         },
     },
     {
-        ignores: ['build/**/*', 'node_modules/**/*', 'src/serviceWorker.js', 'vite.config.mjs'],
+        ignores: ['build/**/*', 'node_modules/**/*', 'src/serviceWorker.js'],
     },
 ];

@@ -1,7 +1,10 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {
-        "noImplicitAny": false
+        "noImplicitAny": false,
+        // the tests are outside of the "src" directory of the adapter
+        "rootDir": "..",
+        "types": ["@iobroker/types", "node", "mocha"]
     },
     "include": ["./**/*.js"]
 }

@@ -24,7 +24,12 @@ The following data types are supported:
 ### **WORK IN PROGRESS**
 * (proarsing) The OPC UA server was fixed and the tags are structured now like a unified namespace
 * (proarsing) Connected clients are shown in `info.connection`
-* (bluefox) The server uses now the configured certificates
+* (@GermanBluefox) The server uses now the configured certificates
+* (@GermanBluefox) The adapter was migrated to TypeScript
+* (@GermanBluefox) GUI was migrated to React 19 and MUI 9
+* (@GermanBluefox) GUI uses now the design of admin 8
+* (@GermanBluefox) The password is stored encrypted now. It must be entered anew
+* (@GermanBluefox) The client subscribes only on its own variables and no longer on all own objects
 
 ### 1.2.1 (2025-07-10)
 * (bluefox) GUI was migrated vite

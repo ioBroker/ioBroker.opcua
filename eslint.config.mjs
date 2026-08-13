@@ -9,12 +9,10 @@ export default [
         // specify files to exclude from linting here
         ignores: [
             'src-admin/**/*',
-            'src/**/*',
             'admin/**/*',
             'node_modules/**/*',
             'test/**/*',
             'build/**/*',
-            'tasks.js',
             'tmp/**/*',
             '.**/*',
             '.dev-server/',
@@ -26,8 +24,20 @@ export default [
             'admin/build',
             'admin/words.js',
             'admin/admin.d.ts',
-            '**/adapter-config.d.ts',    
-        ] 
+            '**/adapter-config.d.ts',
+        ],
+    },
+
+    {
+        // the build script is not part of the adapter sources, it has its own tsconfig
+        files: ['tasks.mts'],
+        languageOptions: {
+            parserOptions: {
+                projectService: false,
+                project: ['./tsconfig.tasks.json'],
+                tsconfigRootDir: import.meta.dirname,
+            },
+        },
     },
 
     {
@@ -39,7 +49,7 @@ export default [
             'prettier/prettier': 'off',
             '@typescript-eslint/no-unused-vars': 'off',
             'no-prototype-builtins': 'off',
-            'curly': 'off',
+            curly: 'off',
             'jsdoc/require-returns-description': 'off',
             'no-else-return': 'off',
             'no-case-declarations': 'off',

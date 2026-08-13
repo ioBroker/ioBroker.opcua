@@ -5,8 +5,10 @@
         "checkJs": false,
         "noEmit": false,
         "declaration": false,
-        "types": ["@iobroker/types"]
+        "outDir": "./build",
+        "rootDir": "./src",
+        "types": ["@iobroker/types", "node"]
     },
-    "include": ["lib/**/*.ts"],
-    "exclude": ["src/excludeMe.ts"]
+    "include": ["src/**/*.ts"],
+    "exclude": ["build/**", "node_modules/**", "src-admin/**", "admin/**"]
 }

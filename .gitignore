@@ -3,6 +3,7 @@
 /*.pem
 /admin/*
 /admin/**/*
+/build
 
 #ignore .commitinfo created by ioBroker release script
 .commitinfo

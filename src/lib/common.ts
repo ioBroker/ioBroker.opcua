@@ -2,13 +2,19 @@
  *
  *      ioBroker OPC UA Adapter
  *
- *      (c) 2016-2024 bluefox <dogafox@gmail.com>
+ *      (c) 2016-2026 bluefox <dogafox@gmail.com>
  *
  *      MIT License
  *
  */
-function convertID2topic(id, pattern, prefix, namespace) {
-    let topic;
+
+export function convertID2topic(
+    id: string,
+    pattern: string | null | undefined,
+    prefix: string,
+    namespace: string,
+): string {
+    let topic: string;
     if (pattern && pattern.startsWith(prefix + namespace)) {
         topic = prefix + id;
     } else if (pattern && pattern.startsWith(namespace)) {
@@ -24,11 +30,11 @@ function convertID2topic(id, pattern, prefix, namespace) {
     return topic;
 }
 
-function state2string(val) {
-    return val === null ? 'null' : val === undefined ? 'undefined' : val.toString();
+export function state2string(val: ioBroker.StateValue | undefined): string {
+    return val === null ? 'null' : val === undefined ? 'undefined' : String(val);
 }
 
-function convertTopic2id(topic, dontCutNamespace, prefix, namespace) {
+export function convertTopic2id(topic: string, dontCutNamespace: boolean, prefix: string, namespace: string): string {
     if (!topic) {
         return topic;
     }
@@ -52,7 +58,3 @@ function convertTopic2id(topic, dontCutNamespace, prefix, namespace) {
 
     return topic;
 }
-
-exports.convertTopic2id = convertTopic2id;
-exports.convertID2topic = convertID2topic;
-exports.state2string = state2string;
