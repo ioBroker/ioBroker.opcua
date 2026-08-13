@@ -35,7 +35,7 @@
     "@types/node": "^22.20.1",
     "mocha": "^11.8.0",
     "prettier": "^3.9.6",
-    "typescript": "~6.0.3"
+    "typescript": "~7.0.2"
   },
   "bugs": {
     "url": "https://github.com/ioBroker/ioBroker.opcua/issues"
