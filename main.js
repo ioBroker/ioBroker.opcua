@@ -378,7 +378,10 @@ function startOpc(adapter) {
         });
     } else {
         const Server = require('./lib/server');
-        server = new Server(adapter, states, objects);
+        server = new Server(adapter, states, objects, {
+            certPublic: certificateFile,
+            certPrivate: privateKeyFile,
+        });
     }
 }
 

@@ -21,6 +21,11 @@ The following data types are supported:
 	### **WORK IN PROGRESS**
 -->
 ## Changelog
+### **WORK IN PROGRESS**
+* (proarsing) The OPC UA server was fixed and the tags are structured now like a unified namespace
+* (proarsing) Connected clients are shown in `info.connection`
+* (bluefox) The server uses now the configured certificates
+
 ### 1.2.1 (2025-07-10)
 * (bluefox) GUI was migrated vite
 * (bluefox) Backend was changed for new js-controller
