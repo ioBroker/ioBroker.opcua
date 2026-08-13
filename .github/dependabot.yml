@@ -1,26 +1,44 @@
+# Dependabot configuration
+# Runs on day 22 of each month at 03:15 (Europe/Berlin).
+# Cooldown delays normal npm updates by 7 days, security updates are processed immediately.
+# Note: cooldown is not supported for the github-actions ecosystem.
+# Reference: https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
 version: 2
 updates:
-  - package-ecosystem: github-actions
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: monthly
-      time: "04:00"
-      timezone: Europe/Berlin
+      interval: 'cron'
+      timezone: 'Europe/Berlin'
+      cronjob: '15 3 22 * *'
+    open-pull-requests-limit: 15
 
-  - package-ecosystem: npm
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: monthly
-      time: "04:00"
-      timezone: Europe/Berlin
+      interval: 'cron'
+      timezone: 'Europe/Berlin'
+      cronjob: '15 3 22 * *'
     open-pull-requests-limit: 20
-    versioning-strategy: increase
+    versioning-strategy: 'increase'
+    cooldown:
+      default-days: 7
+    ignore:
+      - dependency-name: '@types/node'
+        update-types:
+          - 'version-update:semver-major'
 
-  - package-ecosystem: npm
-    directory: "/src"
+  - package-ecosystem: 'npm'
+    directory: '/src-admin'
     schedule:
-      interval: monthly
-      time: "04:00"
-      timezone: Europe/Berlin
+      interval: 'cron'
+      timezone: 'Europe/Berlin'
+      cronjob: '15 3 22 * *'
     open-pull-requests-limit: 20
-    versioning-strategy: increase
+    versioning-strategy: 'increase'
+    cooldown:
+      default-days: 7
+    ignore:
+      - dependency-name: '@types/node'
+        update-types:
+          - 'version-update:semver-major'

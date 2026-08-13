@@ -137,7 +137,6 @@
     "connectionType": "local",
     "dataSource": "poll",
     "compact": true,
-    "materialize": false,
     "icon": "opcua.png",
     "keywords": [
       "OPC",
@@ -145,7 +144,12 @@
     ],
     "tier": 2,
     "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.opcua/master/admin/opcua.png",
-    "type": "protocols"
+    "type": "protocols",
+    "dependencies": [
+      {
+        "js-controller": ">=6.0.11"
+      }
+    ]
   },
   "native": {
     "type": "client",
