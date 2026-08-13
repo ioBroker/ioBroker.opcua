@@ -11,10 +11,14 @@ import { FaFolder as IconFolderClosed, FaFolderOpen as IconFolderOpened } from '
 
 import type { BrowserNode, NodeValue, OnStateChangeHandler, SubscribeInfo } from '../types';
 
-const WIDTH_TYPE = 100;
-const WIDTH_VAL = 200;
-const MARGIN_VAL = 8;
-const WIDTH_NAME = WIDTH_VAL + MARGIN_VAL + WIDTH_TYPE;
+/** Width of the "type" column */
+const WIDTH_TYPE = 120;
+/** Width of the "value" column */
+const WIDTH_VAL = 220;
+/** Indentation per level of the tree */
+const INDENT = 20;
+/** Width of the checkbox in front of a name, so that names of all levels are aligned */
+const WIDTH_CONTROL = 24;
 
 const styles: Record<string, React.CSSProperties> = {
     tab: {
@@ -23,49 +27,20 @@ const styles: Record<string, React.CSSProperties> = {
         overflow: 'hidden',
     },
     refresh: {
-        margin: '10px 10px 5px 20px',
+        margin: '10px 10px 10px 0',
     },
-    itemCheckbox: {
-        padding: 0,
-    },
-    folderWait: {},
     folderIcon: {
         width: 18,
         height: 18,
-        marginRight: 3,
-        marginLeft: 2,
-        verticalAlign: 'middle',
-    },
-    itemUnsupported: {
-        opacity: 0.7,
-    },
-    itemName: {
-        display: 'inline-block',
-    },
-    itemType: {
-        width: WIDTH_TYPE,
-        display: 'inline-block',
-        textOverflow: 'ellipsis',
-        overflow: 'hidden',
-        fontSize: 14,
-        whiteSpace: 'nowrap',
-        fontStyle: 'italic',
-    },
-    itemVal: {
-        width: WIDTH_VAL,
-        display: 'inline-block',
-        marginRight: MARGIN_VAL,
-        textOverflow: 'ellipsis',
-        overflow: 'hidden',
-        textAlign: 'right',
-        whiteSpace: 'nowrap',
-        fontSize: 14,
+        flexShrink: 0,
     },
 };
 
-const sxStyles: Record<string, SxProps<Theme>> = {
+// `satisfies` and not a type annotation: the entries must keep their concrete object type,
+// otherwise they cannot be combined in the array form of the `sx` property
+const sxStyles = {
     tree: {
-        height: 'calc(100% - 75px)',
+        height: 'calc(100% - 90px)',
         overflow: 'auto',
         color: 'text.primary',
         border: '1px solid',
@@ -74,8 +49,15 @@ const sxStyles: Record<string, SxProps<Theme>> = {
         borderBottomLeftRadius: 1,
         borderBottomRightRadius: 1,
     },
-    header: {
+    // header and rows use the same layout, so that the columns are aligned
+    row: {
+        display: 'flex',
+        alignItems: 'center',
         width: '100%',
+        minHeight: 32,
+        boxSizing: 'border-box',
+    },
+    header: {
         background: 'action.hover',
         color: 'text.secondary',
         fontWeight: 'bold',
@@ -84,22 +66,54 @@ const sxStyles: Record<string, SxProps<Theme>> = {
         borderTopLeftRadius: 1,
         borderTopRightRadius: 1,
     },
-    headerCellName: {
-        display: 'inline-block',
-        pl: '3px',
-        borderRight: '1px solid',
-        borderColor: 'divider',
+    cellName: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1,
+        flex: '1 1 auto',
+        // without this the flex item does not shrink and the ellipsis never appears
+        minWidth: 0,
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        pl: 1,
+        pr: 1,
     },
-    headerCellType: {
-        pl: '3px',
+    cellType: {
+        flex: `0 0 ${WIDTH_TYPE}px`,
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        fontSize: 14,
+        fontStyle: 'italic',
+        opacity: 0.8,
+        pr: 1,
     },
-    headerCellValue: {
-        pr: '3px',
-        borderLeft: '1px solid',
-        borderColor: 'divider',
+    cellValue: {
+        flex: `0 0 ${WIDTH_VAL}px`,
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        textAlign: 'right',
+        fontSize: 14,
+        pr: 1,
+    },
+    /** Fixed slot for the checkbox or the progress indicator, so that the rows do not jump */
+    control: {
+        flex: `0 0 ${WIDTH_CONTROL}px`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    checkbox: {
+        p: 0,
+    },
+    label: {
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
     },
     folderDiv: {
-        width: '100%',
         fontWeight: 'bold',
         cursor: 'pointer',
         '&:hover': {
@@ -107,12 +121,14 @@ const sxStyles: Record<string, SxProps<Theme>> = {
         },
     },
     itemDiv: {
-        width: '100%',
         '&:hover': {
             background: 'action.hover',
         },
     },
-};
+    itemUnsupported: {
+        opacity: 0.6,
+    },
+} satisfies Record<string, SxProps<Theme>>;
 
 interface RenderContext {
     cachedFullPathes: string[];
@@ -404,7 +420,6 @@ export default class Browser extends Component<BrowserProps, BrowserState> {
 
     renderFolder(node: BrowserNode, level: number, renderContext: RenderContext): React.JSX.Element {
         const hasSomeSubscribes = renderContext.cachedFullPathes.find(fullPath => fullPath.startsWith(node.fullPath));
-        const style: React.CSSProperties = { paddingLeft: level * 20, width: `calc(100% - ${level * 20}px)` };
         const checked = !!(node.list && hasSomeSubscribes);
         const indeterminate =
             checked &&
@@ -421,43 +436,53 @@ export default class Browser extends Component<BrowserProps, BrowserState> {
         return (
             <Box
                 key={node.fullPath}
-                sx={{ ...(sxStyles.folderDiv as object), color: hasSomeSubscribes ? 'primary.main' : undefined }}
-                style={style}
+                sx={[sxStyles.row, sxStyles.folderDiv, hasSomeSubscribes ? { color: 'primary.main' } : {}]}
                 onClick={() => node.id && this.toggleFolder(node)}
             >
-                {node.list?.length ? (
-                    <Checkbox
-                        style={styles.itemCheckbox}
-                        indeterminate={indeterminate}
-                        checked={checked}
-                        size="small"
-                        onClick={e => {
-                            e.stopPropagation();
-                            if (indeterminate || checked) {
-                                // disable all
-                                this.onSelectUnselectVariable(variables(true), false);
-                            } else {
-                                // enable all
-                                this.onSelectUnselectVariable(variables(false), true);
-                            }
-                        }}
-                    />
-                ) : null}
-                {!node.fullPath || this.state.expanded.includes(node.fullPath) ? (
-                    <IconFolderOpened style={styles.folderIcon} />
-                ) : (
-                    <IconFolderClosed style={styles.folderIcon} />
-                )}
-                {node.name}
-                {this.state.requesting[node.id] ? (
-                    <CircularProgress
-                        variant="indeterminate"
-                        disableShrink
-                        style={styles.folderWait}
-                        size={18}
-                        thickness={4}
-                    />
-                ) : null}
+                <Box sx={[sxStyles.cellName, { pl: `${level * INDENT + 8}px` }]}>
+                    <Box sx={sxStyles.control}>
+                        {node.list?.length ? (
+                            <Checkbox
+                                sx={sxStyles.checkbox}
+                                indeterminate={indeterminate}
+                                checked={checked}
+                                size="small"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    if (indeterminate || checked) {
+                                        // disable all
+                                        this.onSelectUnselectVariable(variables(true), false);
+                                    } else {
+                                        // enable all
+                                        this.onSelectUnselectVariable(variables(false), true);
+                                    }
+                                }}
+                            />
+                        ) : null}
+                    </Box>
+                    {!node.fullPath || this.state.expanded.includes(node.fullPath) ? (
+                        <IconFolderOpened style={styles.folderIcon} />
+                    ) : (
+                        <IconFolderClosed style={styles.folderIcon} />
+                    )}
+                    <Box
+                        component="span"
+                        sx={sxStyles.label}
+                    >
+                        {node.name}
+                    </Box>
+                    {this.state.requesting[node.id] ? (
+                        <CircularProgress
+                            variant="indeterminate"
+                            disableShrink
+                            size={14}
+                            thickness={5}
+                            sx={{ flexShrink: 0 }}
+                        />
+                    ) : null}
+                </Box>
+                <Box sx={sxStyles.cellType} />
+                <Box sx={sxStyles.cellValue} />
             </Box>
         );
     }
@@ -509,7 +534,6 @@ export default class Browser extends Component<BrowserProps, BrowserState> {
     }
 
     renderVariable(node: BrowserNode, level: number): React.JSX.Element {
-        const style: React.CSSProperties = { paddingLeft: level * 20, width: `calc(100% - ${level * 20}px)` };
         if (this.state.values[node.id] === undefined) {
             this.readValue(node);
         }
@@ -533,45 +557,46 @@ export default class Browser extends Component<BrowserProps, BrowserState> {
         return (
             <Box
                 key={node.fullPath}
-                sx={sxStyles.itemDiv}
-                style={style}
+                sx={[sxStyles.row, sxStyles.itemDiv]}
             >
-                {this.state.changing.includes(node.id) ? (
-                    <CircularProgress
-                        variant="indeterminate"
-                        disableShrink
-                        style={styles.folderWait}
-                        size={22}
-                        thickness={4}
-                    />
-                ) : (
-                    <Checkbox
-                        style={styles.itemCheckbox}
-                        checked={!!this.state.subscribes[node.id]}
-                        size="small"
-                        onClick={() => this.onSelectUnselectVariable([node])}
-                    />
-                )}
-                <div
-                    style={{
-                        ...styles.itemName,
-                        width: `calc(100% - ${WIDTH_NAME + 22}px)`,
-                    }}
-                >
-                    {typeof node.name !== 'string' ? JSON.stringify(node.name) : node.name}
-                </div>
-                <div
-                    style={styles.itemType}
+                <Box sx={[sxStyles.cellName, { pl: `${level * INDENT + 8}px` }]}>
+                    <Box sx={sxStyles.control}>
+                        {this.state.changing.includes(node.id) ? (
+                            <CircularProgress
+                                variant="indeterminate"
+                                disableShrink
+                                size={14}
+                                thickness={5}
+                            />
+                        ) : (
+                            <Checkbox
+                                sx={sxStyles.checkbox}
+                                checked={!!this.state.subscribes[node.id]}
+                                size="small"
+                                onClick={() => this.onSelectUnselectVariable([node])}
+                            />
+                        )}
+                    </Box>
+                    <Box
+                        component="span"
+                        sx={sxStyles.label}
+                        title={node.name}
+                    >
+                        {typeof node.name !== 'string' ? JSON.stringify(node.name) : node.name}
+                    </Box>
+                </Box>
+                <Box
+                    sx={sxStyles.cellType}
                     title={type.length > 10 ? type : ''}
                 >
                     {type}
-                </div>
-                <div
-                    style={styles.itemVal}
+                </Box>
+                <Box
+                    sx={sxStyles.cellValue}
                     title={val.length > 10 ? val : ''}
                 >
                     {val}
-                </div>
+                </Box>
             </Box>
         );
     }
@@ -580,15 +605,19 @@ export default class Browser extends Component<BrowserProps, BrowserState> {
         return (
             <Box
                 key={node.fullPath}
-                sx={sxStyles.itemDiv}
-                style={{
-                    ...styles.itemUnsupported,
-                    paddingLeft: level * 20,
-                    width: `calc(100% - ${level * 20}px)`,
-                }}
+                sx={[sxStyles.row, sxStyles.itemDiv, sxStyles.itemUnsupported]}
             >
-                <div style={{ width: 24, display: 'inline-block' }}>&nbsp;</div>
-                {node.name}
+                <Box sx={[sxStyles.cellName, { pl: `${level * INDENT + 8}px` }]}>
+                    <Box sx={sxStyles.control} />
+                    <Box
+                        component="span"
+                        sx={sxStyles.label}
+                    >
+                        {node.name}
+                    </Box>
+                </Box>
+                <Box sx={sxStyles.cellType} />
+                <Box sx={sxStyles.cellValue} />
             </Box>
         );
     }
@@ -657,34 +686,17 @@ export default class Browser extends Component<BrowserProps, BrowserState> {
                     disabled={this.state.refreshing || !!Object.keys(this.state.requesting).length}
                     onClick={() => this.onRefresh()}
                     size="small"
+                    title={I18n.t('Refresh')}
                 >
                     <IconRefresh />
                 </Fab>
                 <Box
                     key="header"
-                    sx={sxStyles.header}
+                    sx={[sxStyles.row, sxStyles.header]}
                 >
-                    <Box
-                        component="span"
-                        sx={sxStyles.headerCellName}
-                        style={{ width: `calc(100% - ${WIDTH_NAME + 11}px)` }}
-                    >
-                        {I18n.t('Path')}
-                    </Box>
-                    <Box
-                        component="span"
-                        sx={sxStyles.headerCellType}
-                        style={styles.itemType}
-                    >
-                        {I18n.t('Type')}
-                    </Box>
-                    <Box
-                        component="span"
-                        sx={sxStyles.headerCellValue}
-                        style={styles.itemVal}
-                    >
-                        {I18n.t('Value')}
-                    </Box>
+                    <Box sx={sxStyles.cellName}>{I18n.t('Path')}</Box>
+                    <Box sx={sxStyles.cellType}>{I18n.t('Type')}</Box>
+                    <Box sx={sxStyles.cellValue}>{I18n.t('Value')}</Box>
                 </Box>
                 <Box sx={sxStyles.tree}>{this.renderItem(null, 0, renderContext)}</Box>
                 {this.renderError()}
