@@ -1,76 +1,76 @@
 {
-    "name": "iobroker.opcua",
-    "description": "The adapter allows to use OPC-UA server and client in ioBroker.",
-    "version": "1.2.1",
-    "author": "bluefox <dogafox@gmail.com>",
-    "homepage": "https://github.com/ioBroker/ioBroker.opcua",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/ioBroker/ioBroker.opcua"
-    },
-    "engines": {
-        "node": ">=22"
-    },
-    "keywords": [
-        "iobroker",
-        "OPC",
-        "OPC UA"
-    ],
-    "dependencies": {
-        "node-opcua": "^2.176.0",
-        "@iobroker/adapter-core": "^3.4.3",
-        "jsonwebtoken": "^9.0.3"
-    },
-    "devDependencies": {
-        "@alcalzone/release-script": "^5.2.1",
-        "@alcalzone/release-script-plugin-iobroker": "^5.2.0",
-        "@alcalzone/release-script-plugin-license": "^5.2.2",
-        "@alcalzone/release-script-plugin-manual-review": "^5.2.0",
-        "@iobroker/adapter-dev": "^1.5.0",
-        "@iobroker/build-tools": "^3.0.1",
-        "@iobroker/eslint-config": "^2.3.4",
-        "@iobroker/testing": "^5.3.0",
-        "@tsconfig/node22": "^22.0.5",
-        "@types/mocha": "^10.0.10",
-        "@types/node": "^22.20.1",
-        "mocha": "^11.8.0",
-        "prettier": "^3.9.6",
-        "typescript": "~6.0.3"
-    },
-    "bugs": {
-        "url": "https://github.com/ioBroker/ioBroker.opcua/issues"
-    },
-    "main": "build/main.js",
-    "files": [
-        "admin/",
-        "build/",
-        "certificates/",
-        "io-package.json",
-        "LICENSE"
-    ],
-    "scripts": {
-        "test:js": "npm run build:ts && mocha --config test/mocharc.custom.json --ignore \"**/node_modules/**\" \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",
-        "test:package": "mocha test/package --exit",
-        "test:integration": "mocha test/integration --exit",
-        "test": "npm run test:js && npm run test:package",
-        "prepublishOnly": "npm run build:ts && node tasks.mts",
-        "build:ts": "tsc -p tsconfig.build.json",
-        "watch:ts": "tsc -p tsconfig.build.json --watch",
-        "build": "npm run build:ts && node tasks.mts",
-        "check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.tasks.json",
-        "lint": "eslint -c eslint.config.mjs",
-        "update-packages": "npx -y npm-check-updates --upgrade && cd src-admin && npx -y npm-check-updates --upgrade",
-        "0-clean": "node tasks.mts --0-clean",
-        "1-npm": "node tasks.mts --1-npm",
-        "2-build": "node tasks.mts --2-build",
-        "3-copy": "node tasks.mts --3-copy",
-        "admin-build": "node tasks.mts",
-        "translate": "translate-adapter",
-        "release": "release-script",
-        "release-patch": "release-script patch --yes --no-update-lockfile",
-        "release-minor": "release-script minor --yes --no-update-lockfile",
-        "release-major": "release-script major --yes --no-update-lockfile",
-        "npm": "npm i && cd src-admin && npm i -f"
-    },
-    "license": "MIT"
+  "name": "iobroker.opcua",
+  "description": "The adapter allows to use OPC-UA server and client in ioBroker.",
+  "version": "2.0.0",
+  "author": "bluefox <dogafox@gmail.com>",
+  "homepage": "https://github.com/ioBroker/ioBroker.opcua",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ioBroker/ioBroker.opcua"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "iobroker",
+    "OPC",
+    "OPC UA"
+  ],
+  "dependencies": {
+    "node-opcua": "^2.176.0",
+    "@iobroker/adapter-core": "^3.4.3",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@alcalzone/release-script": "^5.2.1",
+    "@alcalzone/release-script-plugin-iobroker": "^5.2.0",
+    "@alcalzone/release-script-plugin-license": "^5.2.2",
+    "@alcalzone/release-script-plugin-manual-review": "^5.2.0",
+    "@iobroker/adapter-dev": "^1.5.0",
+    "@iobroker/build-tools": "^3.0.1",
+    "@iobroker/eslint-config": "^2.3.4",
+    "@iobroker/testing": "^5.3.0",
+    "@tsconfig/node22": "^22.0.5",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.20.1",
+    "mocha": "^11.8.0",
+    "prettier": "^3.9.6",
+    "typescript": "~6.0.3"
+  },
+  "bugs": {
+    "url": "https://github.com/ioBroker/ioBroker.opcua/issues"
+  },
+  "main": "build/main.js",
+  "files": [
+    "admin/",
+    "build/",
+    "certificates/",
+    "io-package.json",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test:js": "npm run build:ts && mocha --config test/mocharc.custom.json --ignore \"**/node_modules/**\" \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",
+    "test:package": "mocha test/package --exit",
+    "test:integration": "mocha test/integration --exit",
+    "test": "npm run test:js && npm run test:package",
+    "prepublishOnly": "npm run build:ts && node tasks.mts",
+    "build:ts": "tsc -p tsconfig.build.json",
+    "watch:ts": "tsc -p tsconfig.build.json --watch",
+    "build": "npm run build:ts && node tasks.mts",
+    "check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.tasks.json",
+    "lint": "eslint -c eslint.config.mjs",
+    "update-packages": "npx -y npm-check-updates --upgrade && cd src-admin && npx -y npm-check-updates --upgrade",
+    "0-clean": "node tasks.mts --0-clean",
+    "1-npm": "node tasks.mts --1-npm",
+    "2-build": "node tasks.mts --2-build",
+    "3-copy": "node tasks.mts --3-copy",
+    "admin-build": "node tasks.mts",
+    "translate": "translate-adapter",
+    "release": "release-script",
+    "release-patch": "release-script patch --yes --no-update-lockfile",
+    "release-minor": "release-script minor --yes --no-update-lockfile",
+    "release-major": "release-script major --yes --no-update-lockfile",
+    "npm": "npm i && cd src-admin && npm i -f"
+  },
+  "license": "MIT"
 }

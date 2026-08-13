@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "opcua",
-    "version": "1.2.1",
+    "version": "2.0.0",
     "news": {
+      "2.0.0": {
+        "en": "The OPC UA server was fixed and the tags are structured now like a unified namespace\nConnected clients are shown in `info.connection`\nThe server uses now the configured certificates\nThe adapter was migrated to TypeScript\nGUI was migrated to React 19 and MUI 9\nGUI uses now the design of admin 8\nThe password is stored encrypted now. It must be entered anew\nThe client subscribes only on its own variables and no longer on all own objects\nNode.js 22 is required now",
+        "de": "Der OPC-UA-Server wurde repariert und die Tags sind nun wie ein einheitlicher Namensraum strukturiert.\nVerbundene Clients werden in `info.connection` angezeigt.\nDer Server verwendet nun die konfigurierten Zertifikate.\nDer Adapter wurde nach TypeScript migriert.\nDie Benutzeroberfläche wurde auf React 19 und MUI 9 migriert.\nDie GUI verwendet nun das Design von Admin 8.\nDas Passwort wird nun verschlüsselt gespeichert. Es muss erneut eingegeben werden.\nDer Client abonniert nur noch seine eigenen Variablen und nicht mehr alle seine Objekte.\nNode.js 22 wird jetzt benötigt.",
+        "ru": "Сервер OPC UA был исправлен, и теперь теги структурированы как единое пространство имен.\nПодключенные клиенты отображаются в файле `info.connection`.\nТеперь сервер использует настроенные сертификаты.\nАдаптер был переведён на TypeScript.\nГрафический интерфейс пользователя был переведён на React 19 и MUI 9.\nВ настоящее время графический интерфейс пользователя использует дизайн административной панели 8.\nПароль теперь хранится в зашифрованном виде. Его необходимо ввести заново.\nКлиент подписывается только на свои собственные переменные, а не на все свои объекты.\nТеперь требуется Node.js 22.",
+        "pt": "O servidor OPC UA foi corrigido e as tags agora estão estruturadas como um espaço de nomes unificado.\nOs clientes conectados são exibidos em `info.connection`.\nO servidor agora utiliza os certificados configurados.\nO adaptador foi migrado para TypeScript.\nA interface gráfica foi migrada para React 19 e MUI 9.\nA interface gráfica agora utiliza o design do painel de administração 8.\nA senha agora está armazenada criptografada. Ela precisa ser digitada novamente.\nO cliente se inscreve apenas em suas próprias variáveis e não mais em todos os seus objetos.\nAgora é necessário o Node.js versão 22.",
+        "nl": "De OPC UA-server is gerepareerd en de tags zijn nu gestructureerd als een uniforme naamruimte.\nVerbonden clients worden weergegeven in `info.connection`.\nDe server gebruikt nu de geconfigureerde certificaten.\nDe adapter is gemigreerd naar TypeScript.\nDe GUI is gemigreerd naar React 19 en MUI 9.\nDe GUI gebruikt nu het ontwerp van admin 8.\nHet wachtwoord is nu versleuteld opgeslagen. Het moet opnieuw worden ingevoerd.\nDe client abonneert zich alleen op zijn eigen variabelen en niet langer op al zijn eigen objecten.\nNode.js versie 22 is nu vereist.",
+        "fr": "Le serveur OPC UA a été réparé et les balises sont désormais structurées comme un espace de noms unifié.\nLes clients connectés sont affichés dans `info.connection`\nLe serveur utilise désormais les certificats configurés.\nL'adaptateur a été migré vers TypeScript\nL'interface graphique a été migrée vers React 19 et MUI 9.\nL'interface graphique utilise désormais le design d'Admin 8.\nLe mot de passe est désormais stocké de manière cryptée. Il doit être saisi à nouveau.\nLe client s'abonne uniquement à ses propres variables et non plus à tous ses propres objets.\nNode.js 22 est désormais requis.",
+        "it": "Il server OPC UA è stato riparato e i tag sono ora strutturati come un namespace unificato.\nI client connessi vengono visualizzati in `info.connection`\nIl server ora utilizza i certificati configurati\nL'adattatore è stato migrato a TypeScript\nL'interfaccia grafica è stata migrata a React 19 e MUI 9.\nL'interfaccia grafica utilizza ora il design di admin 8\nLa password è ora memorizzata in forma crittografata. Deve essere inserita nuovamente.\nIl client si iscrive solo alle proprie variabili e non più a tutti i propri oggetti\nOra è richiesto Node.js 22",
+        "es": "El servidor OPC UA se ha corregido y las etiquetas ahora están estructuradas como un espacio de nombres unificado.\nLos clientes conectados se muestran en `info.connection`.\nEl servidor ahora utiliza los certificados configurados.\nEl adaptador se migró a TypeScript.\nLa interfaz gráfica de usuario (GUI) se migró a React 19 y MUI 9.\nLa interfaz gráfica de usuario (GUI) ahora utiliza el diseño de Admin 8.\nLa contraseña ahora está almacenada encriptada. Debe introducirse de nuevo.\nEl cliente se suscribe solo a sus propias variables y ya no a todos sus objetos.\nAhora se requiere Node.js 22.",
+        "pl": "Naprawiono serwer OPC UA, a tagi są teraz ustrukturyzowane jak ujednolicona przestrzeń nazw\nPołączeni klienci są wyświetlani w `info.connection`\nSerwer korzysta teraz ze skonfigurowanych certyfikatów\nAdapter został przeniesiony do TypeScript\nInterfejs graficzny użytkownika został przeniesiony do React 19 i MUI 9\nInterfejs graficzny użytkownika wykorzystuje teraz projekt administratora 8\nHasło jest teraz przechowywane w postaci zaszyfrowanej. Należy je wpisać ponownie.\nKlient subskrybuje tylko własne zmienne, a nie wszystkie własne obiekty\nTeraz wymagany jest Node.js 22",
+        "uk": "Сервер OPC UA було виправлено, а теги тепер структуровані як єдиний простір імен.\nПідключені клієнти відображаються в `info.connection`\nСервер тепер використовує налаштовані сертифікати\nАдаптер перенесено на TypeScript\nГрафічний інтерфейс перенесено на React 19 та MUI 9\nГрафічний інтерфейс тепер використовує дизайн адміністратора 8\nПароль тепер зберігається в зашифрованому вигляді. Його потрібно ввести знову.\nКлієнт підписується лише на власні змінні, а не на всі власні об'єкти.\nТепер потрібен Node.js 22",
+        "zh-cn": "OPC UA 服务器已修复，标签现在已按照统一命名空间进行结构化。\n已连接的客户端显示在 `info.connection` 中。\n服务器现在使用已配置的证书。\n适配器已迁移到 TypeScript。\nGUI 已迁移至 React 19 和 MUI 9。\nGUI 现在采用管理后台 8 的设计。\n密码现已加密存储，必须重新输入。\n客户端仅订阅自身的变量，不再订阅自身的所有对象。\n现在需要 Node.js 22。"
+      },
       "1.2.1": {
         "en": "GUI was migrated vite\nBackend was changed for new js-controller",
         "de": "GUI wurde migriert vite\nBackend wurde für den neuen js-controller geändert",
@@ -77,18 +90,6 @@
         "es": "Hágalo compatible con admin4",
         "pl": "Spraw, aby był zgodny z admin4",
         "zh-cn": "使它与admin4兼容"
-      },
-      "0.4.2": {
-        "en": "Corrected Test-button in GUI",
-        "de": "Korrigierter Test-Button in der GUI",
-        "ru": "Исправлена кнопка Test в графическом интерфейсе.",
-        "pt": "Botão de teste corrigido na GUI",
-        "nl": "Test-knop in GUI gecorrigeerd",
-        "fr": "Bouton de test corrigé dans l'interface graphique",
-        "it": "Pulsante di test corretto nella GUI",
-        "es": "Botón de prueba corregido en GUI",
-        "pl": "Poprawiony przycisk Test w GUI",
-        "zh-cn": "修正了GUI中的测试按钮"
       }
     },
     "titleLang": {
