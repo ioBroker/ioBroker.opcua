@@ -480,7 +480,7 @@ export class OpcUaAdapter extends utils.Adapter {
                         foundObjects[id]?.common &&
                         foundObjects[id].type === 'state'
                     ) {
-                        this.objects[id] = foundObjects[id] as ioBroker.StateObject;
+                        this.objects[id] = foundObjects[id];
                     }
                 });
 

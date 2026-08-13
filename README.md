@@ -30,6 +30,7 @@ The following data types are supported:
 * (@GermanBluefox) GUI uses now the design of admin 8
 * (@GermanBluefox) The password is stored encrypted now. It must be entered anew
 * (@GermanBluefox) The client subscribes only on its own variables and no longer on all own objects
+* (@GermanBluefox) Node.js 22 is required now
 
 ### 1.2.1 (2025-07-10)
 * (bluefox) GUI was migrated vite
@@ -72,7 +73,7 @@ The following data types are supported:
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2024-2025, Denis Haev (dogafox@gmail.com)
+Copyright (c) 2024-2026, Denis Haev (dogafox@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

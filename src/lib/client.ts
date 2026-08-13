@@ -360,9 +360,11 @@ export class OPCUAClient extends EventEmitter {
         const client = this.client || OPCUA.OPCUAClient.create(opts);
         this.client = client;
 
-        client.on('disconnect', () => this.logger.error('Disconnected'));
-        client.on('connect', () => this.logger.error('Connected'));
-        client.on('connection_failed', () => this.logger.error('connection_failed'));
+        // node-opcua emits "connected" and "close", there are no "connect" or "disconnect" events
+        client.on('connected', () => this.logger.debug(`Connected to ${this.options.clientEndpointUrl}`));
+        client.on('connection_failed', () => {
+            this.logger.error(`Connection to ${this.options.clientEndpointUrl} failed`);
+        });
         client.on('connection_lost', () => {
             if (!this.closing) {
                 this.closing = true;
@@ -371,8 +373,8 @@ export class OPCUAClient extends EventEmitter {
             }
         });
 
-        client.on('close', () => this.logger.error('Closed'));
-        client.on('timed_out_request', () => this.logger.error('timed_out_request'));
+        client.on('close', () => this.logger.debug(`Connection to ${this.options.clientEndpointUrl} closed`));
+        client.on('timed_out_request', () => this.logger.warn('Request timed out'));
 
         client.connect(this.options.clientEndpointUrl, (err?: Error) => {
             if (err) {
@@ -388,8 +390,8 @@ export class OPCUAClient extends EventEmitter {
             } else {
                 if (this.reconnectTimeout) {
                     clearTimeout(this.reconnectTimeout);
+                    this.reconnectTimeout = null;
                 }
-                this.reconnectTimeout = null;
                 client.createSession((err: Error | null, _session?: OPCUA.ClientSession) => {
                     if (!err && _session) {
                         this.session = _session;
@@ -450,19 +452,11 @@ export class OPCUAClient extends EventEmitter {
     }
 
     read(nodeId: string): Promise<OPCUA.DataValue> {
-        return new Promise((resolve, reject) => {
-            if (!this.client || !this.session) {
-                return reject(new Error('not connected'));
-            }
+        if (!this.client || !this.session) {
+            return Promise.reject(new Error('not connected'));
+        }
 
-            this.session.readVariableValue(nodeId, (err: Error | null, value?: OPCUA.DataValue) => {
-                if (!err && value) {
-                    resolve(value);
-                } else {
-                    reject(err || new Error(`Cannot read ${nodeId}`));
-                }
-            });
-        });
+        return this.session.read({ nodeId, attributeId: OPCUA.AttributeIds.Value });
     }
 
     write(id: string, value: any): Promise<any> {
@@ -633,14 +627,7 @@ export class OPCUAClient extends EventEmitter {
 
     addState(node: AddStateMessage): Promise<void> {
         return new Promise((resolve, reject) => {
-            if (!this.session) {
-                return reject(new Error('not connected'));
-            }
-
-            this.session.readVariableValue(node.nodeId, (err: Error | null, value?: OPCUA.DataValue) => {
-                if (err || !value) {
-                    return reject(err || new Error(`Cannot read ${node.nodeId}`));
-                }
+            this.read(node.nodeId).then(value => {
                 const id = `${this.adapter.namespace}.vars.${node.iobName}`;
 
                 const obj: ioBroker.SettableStateObject = {
@@ -663,11 +650,14 @@ export class OPCUAClient extends EventEmitter {
                 this.adapter.setForeignObject(id, obj, err => {
                     if (err) {
                         reject(err);
-                    } else if (value.value && value.value.value !== undefined) {
-                        resolve();
+                        return;
                     }
+                    if (value.value?.value === undefined) {
+                        this.logger.debug(`The variable ${node.nodeId} was added, but has no value yet`);
+                    }
+                    resolve();
                 });
-            });
+            }, reject);
         });
     }
 

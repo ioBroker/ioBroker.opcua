@@ -67,9 +67,11 @@ export default class Client extends Component<TabProps, ClientState> {
 
     updateSubscribes(): Promise<void> {
         return this.props.socket
-            .sendTo<
-                Record<string, SubscribeInfo>
-            >(`${this.props.adapterName}.${this.props.instance}`, 'getSubscribes', null)
+            .sendTo<Record<string, SubscribeInfo>>(
+                `${this.props.adapterName}.${this.props.instance}`,
+                'getSubscribes',
+                null,
+            )
             .then(subscribes => this.setState({ loading: false, subscribes }));
     }
 
