@@ -54,6 +54,7 @@
     "test:integration": "mocha test/integration --exit",
     "test": "npm run test:js && npm run test:package",
     "prepublishOnly": "npm run build:ts && node tasks.mts",
+    "prepack": "npm run build:ts",
     "build:ts": "tsc -p tsconfig.build.json",
     "watch:ts": "tsc -p tsconfig.build.json --watch",
     "build": "npm run build:ts && node tasks.mts",

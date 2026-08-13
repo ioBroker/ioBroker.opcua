@@ -46,6 +46,7 @@ jobs:
       - uses: ioBroker/testing-action-adapter@v1
         with:
           node-version: ${{ matrix.node-version }}
+          build: 'true'
           os: ${{ matrix.os }}
 
 # TODO: To enable automatic npm releases, create a token on npmjs.org
@@ -73,4 +74,5 @@ jobs:
       - uses: ioBroker/testing-action-deploy@v1
         with:
           node-version: '24.x'
+          build: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}

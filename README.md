@@ -23,8 +23,6 @@ The following data types are supported:
 ## Changelog
 ### **WORK IN PROGRESS**
 * (@GermanBluefox) Adapter requires js-controller >= 6.0.11 now
-
-### 2.0.0 (2026-08-13)
 * (proarsing) The OPC UA server was fixed and the tags are structured now like a unified namespace
 * (proarsing) Connected clients are shown in `info.connection`
 * (@GermanBluefox) The server uses now the configured certificates
