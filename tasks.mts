@@ -39,7 +39,7 @@ if (process.argv.includes('--0-clean')) {
     clean();
 } else if (process.argv.includes('--1-npm')) {
     if (!existsSync(`${import.meta.dirname}/src-admin/node_modules`)) {
-        npmInstall('src-admin').catch(fail('Cannot run npm'));
+        npmInstall('src-admin', { force: false }).catch(fail('Cannot run npm'));
     }
 } else if (process.argv.includes('--2-build')) {
     build().catch(fail('Cannot build'));
@@ -47,7 +47,7 @@ if (process.argv.includes('--0-clean')) {
     copyAllFiles().catch(fail('Cannot copy'));
 } else {
     clean();
-    npmInstall('src-admin')
+    npmInstall('src-admin', { force: false })
         .then(() => build())
         .then(() => copyAllFiles())
         .catch(fail('Cannot build'));
