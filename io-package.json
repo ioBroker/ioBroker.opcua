@@ -3,6 +3,19 @@
     "name": "opcua",
     "version": "2.0.0",
     "news": {
+      "2.0.0": {
+        "en": "The OPC UA server was fixed and the tags are structured now like a unified namespace\nThe adapter was migrated to TypeScript\nGUI was migrated to React 19 and MUI 9\nThe password is stored encrypted now. It must be entered anew\nNode.js 22 is required now",
+        "de": "Der OPC-UA-Server wurde repariert und die Tags sind jetzt wie ein Unified Namespace strukturiert\nDer Adapter wurde nach TypeScript migriert\nDie Oberfläche wurde auf React 19 und MUI 9 migriert\nDas Passwort wird jetzt verschlüsselt gespeichert. Es muss neu eingegeben werden\nNode.js 22 wird jetzt vorausgesetzt",
+        "ru": "Сервер OPC UA исправлен, теги теперь структурированы как единое пространство имён\nАдаптер переведён на TypeScript\nИнтерфейс переведён на React 19 и MUI 9\nПароль теперь хранится в зашифрованном виде. Его нужно ввести заново\nТеперь требуется Node.js 22",
+        "pt": "O servidor OPC UA foi corrigido e as tags são agora estruturadas como um unified namespace\nO adaptador foi migrado para TypeScript\nA interface foi migrada para React 19 e MUI 9\nA senha é agora guardada de forma criptografada. Tem de ser introduzida novamente\nÉ agora necessário Node.js 22",
+        "nl": "De OPC UA-server is gerepareerd en de tags zijn nu gestructureerd als een unified namespace\nDe adapter is gemigreerd naar TypeScript\nDe interface is gemigreerd naar React 19 en MUI 9\nHet wachtwoord wordt nu versleuteld opgeslagen. Het moet opnieuw worden ingevoerd\nNode.js 22 is nu vereist",
+        "fr": "Le serveur OPC UA a été corrigé et les tags sont désormais structurés comme un unified namespace\nL'adaptateur a été migré vers TypeScript\nL'interface a été migrée vers React 19 et MUI 9\nLe mot de passe est désormais enregistré chiffré. Il doit être saisi à nouveau\nNode.js 22 est désormais requis",
+        "it": "Il server OPC UA è stato corretto e i tag sono ora strutturati come un unified namespace\nL'adattatore è stato migrato a TypeScript\nL'interfaccia è stata migrata a React 19 e MUI 9\nLa password viene ora salvata cifrata. Deve essere inserita di nuovo\nOra è richiesto Node.js 22",
+        "es": "El servidor OPC UA se ha corregido y las etiquetas se estructuran ahora como un unified namespace\nEl adaptador se ha migrado a TypeScript\nLa interfaz se ha migrado a React 19 y MUI 9\nLa contraseña se guarda ahora cifrada. Debe introducirse de nuevo\nAhora se requiere Node.js 22",
+        "pl": "Serwer OPC UA został naprawiony, a tagi są teraz uporządkowane jak unified namespace\nAdapter został przeniesiony na TypeScript\nInterfejs został przeniesiony na React 19 i MUI 9\nHasło jest teraz zapisywane w postaci zaszyfrowanej. Musi zostać wprowadzone ponownie\nWymagany jest teraz Node.js 22",
+        "uk": "Сервер OPC UA виправлено, теги тепер структуровані як єдиний простір імен\nАдаптер переведено на TypeScript\nІнтерфейс переведено на React 19 та MUI 9\nПароль тепер зберігається зашифрованим. Його потрібно ввести заново\nТепер потрібен Node.js 22",
+        "zh-cn": "OPC UA 服务器已修复，标签现在按统一命名空间结构组织\n适配器已迁移到 TypeScript\n界面已迁移到 React 19 和 MUI 9\n密码现在以加密方式存储，必须重新输入\n现在需要 Node.js 22"
+      },
       "1.2.1": {
         "en": "GUI was migrated vite\nBackend was changed for new js-controller",
         "de": "GUI wurde migriert vite\nBackend wurde für den neuen js-controller geändert",
@@ -24,7 +37,7 @@
         "nl": "GUI is gemigreerd naar een non-style framework",
         "fr": "L'interface graphique a été migrée vers un cadre non style",
         "it": "GUI è stata migrata a un quadro non-stile",
-        "es": "GUI was migrated to a non-style framework",
+        "es": "La interfaz se migró a un framework sin estilos",
         "pl": "Interfejs GUI został przeniesiony na niestylowe ramy",
         "uk": "GUI був мігрований в рамку не стилі",
         "zh-cn": "GUI 已迁移到非样式框架"
@@ -52,7 +65,8 @@
         "it": "Implementata la scrittura degli stati in modalità client",
         "es": "Implementé la escritura de estados en el modo cliente.",
         "pl": "Zaimplementowano zapisywanie stanów w trybie klienta",
-        "zh-cn": "实现了客户端模式下状态的写入"
+        "zh-cn": "实现了客户端模式下状态的写入",
+        "uk": "Реалізовано запис станів у режимі клієнта"
       },
       "0.4.4": {
         "en": "Implemented the writing of states in the client mode",
@@ -64,7 +78,8 @@
         "it": "Implementata la scrittura degli stati in modalità client",
         "es": "Implementé la escritura de estados en el modo cliente.",
         "pl": "Zaimplementowano zapisywanie stanów w trybie klienta",
-        "zh-cn": "实现了客户端模式下状态的写入"
+        "zh-cn": "实现了客户端模式下状态的写入",
+        "uk": "Реалізовано запис станів у режимі клієнта"
       },
       "0.4.3": {
         "en": "Make it admin4 compatible",
@@ -76,7 +91,8 @@
         "it": "Rendilo compatibile con admin4",
         "es": "Hágalo compatible con admin4",
         "pl": "Spraw, aby był zgodny z admin4",
-        "zh-cn": "使它与admin4兼容"
+        "zh-cn": "使它与admin4兼容",
+        "uk": "Сумісність з admin4"
       }
     },
     "titleLang": {
@@ -135,6 +151,11 @@
     "dependencies": [
       {
         "js-controller": ">=6.0.11"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=7.6.20"
       }
     ]
   },
@@ -242,6 +263,7 @@
       "type": "state",
       "common": {
         "name": "Events for GUI",
+        "role": "state",
         "type": "string",
         "write": false,
         "read": true

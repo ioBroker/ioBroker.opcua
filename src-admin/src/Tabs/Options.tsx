@@ -462,11 +462,14 @@ export default class Options extends Component<OptionsProps, OptionsState> {
                 {this.renderAuthType()}
                 {this.props.native.authType === 'cert' ? this.renderCert('public') : null}
                 {this.props.native.authType === 'cert' ? this.renderCert('private') : null}
-                {this.props.native.authType === 'cert' ? this.renderSecurityMode() : null}
-                {this.props.native.authType === 'cert' && this.props.native.certSecurityMode === 'signAndEncrypt'
+                {this.props.native.authType === 'basic' ? this.renderBasicAuth() : null}
+                {/* the channel security is independent of the authentication, a server may demand it for a password too */}
+                {this.props.native.authType !== 'none' ? this.renderSecurityMode() : null}
+                {this.props.native.authType !== 'none' &&
+                this.props.native.certSecurityMode &&
+                this.props.native.certSecurityMode !== 'none'
                     ? this.renderSecurityPolicy()
                     : null}
-                {this.props.native.authType === 'basic' ? this.renderBasicAuth() : null}
                 <FormControlLabel
                     sx={{ '& .MuiFormControlLabel-label': { color: 'text.primary' } }}
                     control={

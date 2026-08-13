@@ -40,7 +40,13 @@ export interface CertificateOptions {
 export interface ClientOptions extends CertificateOptions {
     clientEndpointUrl: string;
     clientReconnectInterval?: number | string;
-    authType?: string;
+    /** How the client authenticates itself: anonymous, with user name and password or with a certificate */
+    authType?: 'none' | 'basic' | 'cert';
+    /** User name and password, used if `authType` is "basic" */
+    basicUserName?: string;
+    basicUserPassword?: string;
+    /** Security of the channel: "none", "sign" or "signAndEncrypt" */
+    certSecurityMode?: string;
     certSecurityPolicy?: string;
     logger?: ioBroker.Logger;
 }

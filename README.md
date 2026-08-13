@@ -22,6 +22,9 @@ The following data types are supported:
 -->
 ## Changelog
 ### **WORK IN PROGRESS**
+* (@GermanBluefox) The adapter no longer terminates the host process in compact mode
+* (@GermanBluefox) Added the missing admin dependency and the role of `info.event`
+* (@GermanBluefox) Fixed the authentication with user name and password (#64)
 * (@GermanBluefox) Adapter requires js-controller >= 6.0.11 now
 * (proarsing) The OPC UA server was fixed and the tags are structured now like a unified namespace
 * (proarsing) Connected clients are shown in `info.connection`

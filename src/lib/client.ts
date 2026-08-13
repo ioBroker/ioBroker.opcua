@@ -305,6 +305,47 @@ export class OPCUAClient extends EventEmitter {
             .on('terminated', () => DEBUG && console.log('terminated'));
     }
 
+    /**
+     * Security of the channel. It is configured in `certSecurityMode` and NOT derived from the
+     * authentication type. Older versions always used "SignAndEncrypt" for the certificate
+     * authentication, so this stays the default there to not break existing configurations.
+     */
+    private getSecurityMode(): OPCUA.MessageSecurityMode {
+        switch (this.options.certSecurityMode) {
+            case 'sign':
+                return OPCUA.MessageSecurityMode.Sign;
+            case 'signAndEncrypt':
+                return OPCUA.MessageSecurityMode.SignAndEncrypt;
+            default:
+                return this.options.authType === 'cert'
+                    ? OPCUA.MessageSecurityMode.SignAndEncrypt
+                    : OPCUA.MessageSecurityMode.None;
+        }
+    }
+
+    /**
+     * The identity, with which the session is opened. Without it node-opcua opens the session
+     * anonymously, so a configured user name never reached the server.
+     */
+    private getUserIdentity(): OPCUA.UserIdentityInfo {
+        if (this.options.authType !== 'basic') {
+            return { type: OPCUA.UserTokenType.Anonymous };
+        }
+
+        if (!this.options.basicUserName) {
+            this.logger.warn(
+                'The authentication is set to "Password", but no user name is configured. Connecting anonymously.',
+            );
+            return { type: OPCUA.UserTokenType.Anonymous };
+        }
+
+        return {
+            type: OPCUA.UserTokenType.UserName,
+            userName: this.options.basicUserName,
+            password: this.options.basicUserPassword || '',
+        };
+    }
+
     private getCertSecurityPolicy(): OPCUA.SecurityPolicy {
         switch (this.options.certSecurityPolicy) {
             case 'none':
@@ -336,17 +377,23 @@ export class OPCUAClient extends EventEmitter {
 
     private connect(): void {
         this.reconnectTimeout = null;
+        const securityMode = this.getSecurityMode();
+        let securityPolicy = this.getCertSecurityPolicy();
+
+        if (securityMode !== OPCUA.MessageSecurityMode.None && securityPolicy === OPCUA.SecurityPolicy.None) {
+            // a signed or encrypted channel cannot work without a policy
+            securityPolicy = OPCUA.SecurityPolicy.Basic256Sha256;
+            this.logger.warn(
+                `No security policy is configured for the security mode "${this.options.certSecurityMode}". Using ${securityPolicy}.`,
+            );
+        }
+
         const opts: OPCUA.OPCUAClientOptions = {
             clientName: 'ioBroker',
-            securityMode:
-                this.options.authType === 'cert'
-                    ? OPCUA.MessageSecurityMode.SignAndEncrypt
-                    : this.options.authType === 'basic'
-                      ? OPCUA.MessageSecurityMode.Sign
-                      : OPCUA.MessageSecurityMode.None,
+            securityMode,
             keepSessionAlive: true,
             endpointMustExist: false,
-            securityPolicy: this.getCertSecurityPolicy(),
+            securityPolicy,
             connectionStrategy: {
                 initialDelay: 1000,
                 maxRetry: 1,
@@ -392,7 +439,16 @@ export class OPCUAClient extends EventEmitter {
                     clearTimeout(this.reconnectTimeout);
                     this.reconnectTimeout = null;
                 }
-                client.createSession((err: Error | null, _session?: OPCUA.ClientSession) => {
+                const userIdentity = this.getUserIdentity();
+                this.logger.debug(
+                    `Creating session as ${
+                        userIdentity.type === OPCUA.UserTokenType.UserName
+                            ? `user "${this.options.basicUserName}"`
+                            : 'anonymous'
+                    }`,
+                );
+
+                client.createSession(userIdentity, (err: Error | null, _session?: OPCUA.ClientSession) => {
                     if (!err && _session) {
                         this.session = _session;
                         this.session.on('keepalive_failure', () => this.logger.error('Keepalive error'));

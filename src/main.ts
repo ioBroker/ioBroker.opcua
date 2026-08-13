@@ -377,6 +377,12 @@ export class OpcUaAdapter extends utils.Adapter {
                     certPublic: message.authType === 'cert' ? certificateTest : undefined,
                     certPrivate: message.authType === 'cert' ? privateKeyTest : undefined,
                     clientReconnectInterval: message.clientReconnectInterval,
+                    // the test must use the same authentication as the running instance
+                    authType: message.authType,
+                    basicUserName: message.basicUserName,
+                    basicUserPassword: message.basicUserPassword,
+                    certSecurityMode: message.certSecurityMode,
+                    certSecurityPolicy: message.certSecurityPolicy,
                 },
                 (err, result) => {
                     testClient = null;
@@ -395,6 +401,11 @@ export class OpcUaAdapter extends utils.Adapter {
             certPublic: this.certificateFile,
             certPrivate: this.privateKeyFile,
             clientReconnectInterval: this.config.clientReconnectInterval,
+            authType: this.config.authType,
+            basicUserName: this.config.basicUserName,
+            basicUserPassword: this.config.basicUserPassword,
+            certSecurityMode: this.config.certSecurityMode,
+            certSecurityPolicy: this.config.certSecurityPolicy,
         });
         this.client = client;
 
@@ -453,7 +464,8 @@ export class OpcUaAdapter extends utils.Adapter {
         void this.getForeignStates(pattern, (err, res) => {
             if (err || !res) {
                 this.log.error(`Cannot read states: ${err}`);
-                setTimeout(() => process.exit(45), 5000);
+                // terminate() and not exiting the process: in compact mode that would kill the whole host
+                setTimeout(() => this.terminate('Cannot read states', 45), 5000);
                 return;
             }
 
